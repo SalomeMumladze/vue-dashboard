@@ -13,9 +13,9 @@ const metrics = ref<Metric[]>([]);
 
 onMounted(async () => {
   try {
-    const { data } = await api.get("/users");
+    // const { data } = await api.get("/users");
     metrics.value = [
-      { title: "Users", value: data.length, description: "Total users" },
+      { title: "Users", value: 1232, description: "Total users" },
       { title: "Revenue", value: 5400, description: "Monthly revenue" },
       { title: "Orders", value: 320, description: "Completed orders" },
     ];

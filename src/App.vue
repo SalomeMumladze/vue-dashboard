@@ -1,9 +1,7 @@
+<script setup lang="ts"></script>
+
 <template>
-  <div class="min-h-screen bg-gray-100">
-    <DashboardView />
-  </div>
+  <router-view />
 </template>
 
-<script setup lang="ts">
-import DashboardView from "./views/DashboardView.vue";
-</script>
+<style></style>
