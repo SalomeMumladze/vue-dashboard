@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons-vue";
 
 const collapsed = ref(false);
 const router = useRouter();
@@ -40,9 +39,6 @@ const logout = () => {
           align-items: center;
         "
       >
-        <a-button type="text" @click="collapsed = !collapsed">
-          <component :is="collapsed ? MenuUnfoldOutlined : MenuFoldOutlined" />
-        </a-button>
         <a-button type="primary" @click="logout">Logout</a-button>
       </a-layout-header>
 
