@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Layout from "../components/Layout.vue";
+import Layout from "@/components/Layout.vue";
 import { ref } from "vue";
 import VueApexCharts from "vue3-apexcharts";
 
@@ -21,8 +21,3 @@ const chartOptions = ref({
     />
   </Layout>
 </template>
-
-<script lang="ts">
-import VueApexCharts from "vue3-apexcharts";
-export default { components: { VueApexCharts } };
-</script>

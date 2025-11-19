@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LoginPage from "../pages/LoginPage.vue";
-import DashboardPage from "../pages/DashboardPage.vue";
-import AnalyticsPage from "../pages/AnalyticsPage.vue";
-import ReportsPage from "../pages/ReportsPage.vue";
-import SettingsPage from "../pages/SettingsPage.vue";
-import NotFound from "../pages/NotFound.vue";
+import LoginPage from "@/pages/LoginPage.vue";
+import DashboardPage from "@/pages/DashboardPage.vue";
+import AnalyticsPage from "@/pages/AnalyticsPage.vue";
+import ReportsPage from "@/pages/ReportsPage.vue";
+import SettingsPage from "@/pages/SettingsPage.vue";
+import NotFound from "@/pages/NotFound.vue";
 
 const routes = [
   { path: "/", redirect: "/dashboard" },
