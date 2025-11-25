@@ -70,48 +70,54 @@ const widgetIcons: Record<string, any> = {
   "Active Users": UserOutlined,
   "Conversion Rate": PercentageOutlined,
 };
+
+const loading = false;
 </script>
 
 <template>
   <Layout>
     <a-row :gutter="16">
       <a-col
-        :span="6"
         v-for="widget in widgets"
         :key="widget.title"
-        class="h-20"
+        :xs="24"
+        :sm="12"
+        :md="8"
+        :lg="6"
       >
         <a-card
           class="border !border-gray-200 border-solid h-full"
-          :body-style="{ padding: '12px' }"
+          :body-style="{ padding: '10px 20px' }"
         >
-          <div class="flex items-center gap-1 text-gray-400">
-            <component :is="widgetIcons[widget.title]" />
-            <h3>{{ widget.title }}</h3>
-          </div>
-          <div class="flex items-center justify-between gap-2 mt-1">
-            <p class="text-2xl font-bold m-0">
-              {{ getFormattedNumber(widget.current) }}
-              {{ currency_options[widget?.currency]?.symbol }}
-              {{ widget.unit || "" }}
-            </p>
-
-            <a-tag
-              :color="widget.change >= 0 ? 'green' : 'red'"
-              type="ghost"
-              class="!flex !items-center !border-none !font-medium !rounded-xl"
-            >
-              <component
-                :is="widget.change >= 0 ? ArrowUpOutlined : ArrowDownOutlined"
-                class="text-sm"
-              />
-              <span
-                >{{ getFormattedNumber(Math.abs(widget.change)) }}
+          <a-skeleton :loading="loading" active :paragraph="{ rows: 1 }">
+            <div class="flex items-center gap-1 text-gray-400">
+              <component :is="widgetIcons[widget.title]" />
+              <h3>{{ widget.title }}</h3>
+            </div>
+            <div class="flex items-center justify-between gap-2 mt-1 flex-wrap">
+              <p class="text-2xl font-bold m-0">
+                {{ getFormattedNumber(widget.current) }}
                 {{ currency_options[widget?.currency]?.symbol }}
                 {{ widget.unit || "" }}
-              </span>
-            </a-tag>
-          </div>
+              </p>
+
+              <a-tag
+                :color="widget.change >= 0 ? 'green' : 'red'"
+                type="ghost"
+                class="!flex !items-center !border-none !font-medium !rounded-xl"
+              >
+                <component
+                  :is="widget.change >= 0 ? ArrowUpOutlined : ArrowDownOutlined"
+                  class="text-sm"
+                />
+                <span>
+                  {{ getFormattedNumber(Math.abs(widget.change)) }}
+                  {{ currency_options[widget?.currency]?.symbol }}
+                  {{ widget.unit || "" }}
+                </span>
+              </a-tag>
+            </div>
+          </a-skeleton>
         </a-card>
       </a-col>
     </a-row>
