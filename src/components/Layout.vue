@@ -61,7 +61,7 @@ const logout = () => {
         <a-button type="primary" @click="logout">Logout</a-button>
       </a-layout-header>
 
-      <a-layout-content style="margin: 16px; padding: 24px; background: #fff">
+      <a-layout-content class="rounded-md sm:p-4 p-2">
         <slot />
       </a-layout-content>
     </a-layout>
