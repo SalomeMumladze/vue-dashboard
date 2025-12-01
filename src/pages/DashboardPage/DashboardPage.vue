@@ -10,6 +10,10 @@ import {
 } from "@ant-design/icons-vue";
 import { currency_options } from "@/components/Currency";
 import getFormattedNumber from "@/components/getFormattedNumber";
+import Table from "./components/Table.vue";
+import Chart from "./components/Chart.vue";
+import NetworkPieChart from "./components/NetworkPieChart.vue";
+import TotalSalesArea from "./components/TotalSalesArea.vue";
 
 interface Widget {
   title: string;
@@ -76,7 +80,7 @@ const loading = false;
 
 <template>
   <Layout>
-    <a-row :gutter="16">
+    <a-row :gutter="16" class="mb-6">
       <a-col
         v-for="widget in widgets"
         :key="widget.title"
@@ -111,7 +115,7 @@ const loading = false;
                   class="text-sm"
                 />
                 <span>
-                  {{ getFormattedNumber(Math.abs(widget.change)) }}
+                  {{ getFormattedNumber(widget.change) }}
                   {{ currency_options[widget?.currency]?.symbol }}
                   {{ widget.unit || "" }}
                 </span>
@@ -120,6 +124,24 @@ const loading = false;
           </a-skeleton>
         </a-card>
       </a-col>
+    </a-row>
+    <a-row :gutter="16" class="mb-6">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12">
+        <Table />
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"><Chart /> </a-col>
+    </a-row>
+    <a-row :gutter="16" class="mb-6">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
+    </a-row>
+    <a-row :gutter="16" class="mb-6">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
+    </a-row>
+    <a-row :gutter="16" class="mb-6">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
     </a-row>
   </Layout>
 </template>

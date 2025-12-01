@@ -1,9 +1,13 @@
-export default function getFormattedNumber(value: number | string): string {
+import { currency_options } from "./Currency";
+
+export default function getFormattedNumber(
+  value: number | string,
+  currency: string | null = null
+): string {
   const numericValue = Number(value);
 
   if (isNaN(numericValue)) return "0";
 
-  // Check if the number has a decimal part
   const hasDecimal = numericValue % 1 !== 0;
   const decimalPlaces = hasDecimal ? 2 : 0;
 
@@ -12,5 +16,11 @@ export default function getFormattedNumber(value: number | string): string {
     maximumFractionDigits: decimalPlaces,
   }).format(numericValue);
 
-  return formattedValue;
+  const currencyConfig = currency
+    ? currency_options[currency.toUpperCase()]
+    : undefined;
+
+  const symbol = currencyConfig?.symbol || "";
+
+  return `${formattedValue}${symbol}`;
 }
