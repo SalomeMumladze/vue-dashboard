@@ -8,10 +8,23 @@
 }
 
 .apexcharts-tooltip {
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: #001529 !important;
   border-radius: 8px !important;
   border: none !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-  padding: 7px !important;
+  padding: 7px 12px !important;
   font-weight: 500 !important;
+}
+
+.apexcharts-xaxistooltip {
+  display: none !important;
+}
+
+.apexcharts-legend.apx-legend-position-left {
+  justify-content: center !important;
+  gap: 5px !important;
+}
+
+.apexcharts-legend-series {
+  gap: 5px !important;
 }

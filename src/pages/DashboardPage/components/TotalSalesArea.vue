@@ -15,12 +15,12 @@ const salesData = [
 
 const series = [
   {
-    name: "Total Revenue",
+    name: "Revenue",
     data: salesData.map((item) => item.totalRevenue),
     color: "#1E40AF",
   },
   {
-    name: "Total Orders",
+    name: "Orders",
     data: salesData.map((item) => item.totalOrders),
     color: "#F59E0B",
   },
@@ -50,13 +50,12 @@ const chartOptions = {
   },
   grid: {
     borderColor: "#E5E7EB",
-    strokeDashArray: 3,
+    strokeDashArray: 5,
   },
   xaxis: {
     axisBorder: {
-      show: true,
+      show: false,
       color: "#E5E7EB",
-      height: 1,
     },
     axisTicks: {
       show: true,
@@ -104,11 +103,15 @@ const chartOptions = {
       allowMultipleDataPointsSelection: true,
     },
     x: {
-      show: false,
+      show: true,
       style: {
         fontSize: "12px",
         fontWeight: 500,
       },
+      custom: (d) => {
+        console.log(d);
+      },
+
       formatter: (value: string) => {
         const date = new Date(value);
         return date.toLocaleDateString("en-US", {
@@ -118,7 +121,6 @@ const chartOptions = {
         });
       },
     },
-    cssClass: "custom-apex-tooltip",
 
     custom: ({ series, dataPointIndex, w }) => {
       return renderTooltip({
@@ -142,13 +144,15 @@ const chartOptions = {
   legend: {
     position: "top",
   },
- 
 };
 </script>
 
 <template>
-  <div class="bg-white p-4 rounded-xl shadow">
-    <h2 class="text-lg font-semibold mb-3">Revenue & Orders (Area Chart)</h2>
+  <div class="bg-white rounded-xl shadow">
+    <div class="flex items-center justify-between gap-2 mb-3 px-4 pt-4">
+      <h2 class="text-lg font-semibold">Revenue & Orders</h2>
+      <a-range-picker size="middle" />
+    </div>
 
     <VueApexCharts
       type="area"
