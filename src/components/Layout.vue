@@ -50,7 +50,7 @@ const logout = () => {
 
     <a-layout
       :style="{
-        height: 'calc(100vh - 64px)',
+        height: 'calc(100vh)',
         overflow: 'hidden',
       }"
     >

@@ -3,7 +3,7 @@ export function formatDate(
   format: "YYYY-MM-DD" | "DD/MM" | "MMM D" | "MMM DD yyyy" = "YYYY-MM-DD"
 ): string {
   const d = typeof date === "string" ? new Date(date) : date;
-
+  console.log(date, d);
   if (isNaN(d.getTime())) return "";
 
   const day = String(d.getDate()).padStart(2, "0");

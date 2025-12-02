@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import VueApexCharts from "vue3-apexcharts";
+import getShortFormattedNumber from "@/components/getShortFormattedNumber";
+import { renderTooltip } from "@/components/charts/CustomTooltip";
 
-/* ----------------------------------------------------
-   1. SAMPLE DAILY DATA (Revenue + Orders)
----------------------------------------------------- */
 const salesData = [
   { date: "2025-11-01", totalRevenue: 120000, totalOrders: 1100 },
   { date: "2025-11-02", totalRevenue: 145680, totalOrders: 1247 },
@@ -14,73 +13,136 @@ const salesData = [
   { date: "2025-11-07", totalRevenue: 161500, totalOrders: 1380 },
 ];
 
-/* ----------------------------------------------------
-   2. SERIES FOR TWO LINES
----------------------------------------------------- */
 const series = [
   {
     name: "Total Revenue",
     data: salesData.map((item) => item.totalRevenue),
+    color: "#1E40AF",
   },
   {
     name: "Total Orders",
     data: salesData.map((item) => item.totalOrders),
+    color: "#F59E0B",
   },
 ];
 
-/* ----------------------------------------------------
-   3. CHART OPTIONS
----------------------------------------------------- */
 const chartOptions = {
   chart: {
     type: "area",
-    toolbar: { show: false },
+    toolbar: {
+      show: false,
+    },
   },
   stroke: {
     curve: "smooth",
-    width: 2,
+    width: 1.5,
   },
   fill: {
     type: "gradient",
     gradient: {
       shadeIntensity: 0.5,
-      opacityFrom: 0.35,
+      opacityFrom: 0.6,
       opacityTo: 0.05,
     },
   },
+  dataLabels: {
+    enabled: false,
+  },
+  grid: {
+    borderColor: "#E5E7EB",
+    strokeDashArray: 3,
+  },
   xaxis: {
+    axisBorder: {
+      show: true,
+      color: "#E5E7EB",
+      height: 1,
+    },
+    axisTicks: {
+      show: true,
+      color: "#E5E7EB",
+    },
     categories: salesData.map((item) => item.date),
+    labels: {
+      formatter: (value: string) => {
+        const date = new Date(value);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "2-digit",
+        });
+      },
+      style: {
+        fontSize: "11px",
+        fontWeight: 500,
+      },
+    },
   },
   yaxis: [
     {
-      title: { text: "Revenue ($)" },
       labels: {
-        formatter: (val: number) => "$" + val.toLocaleString(),
+        formatter: (val: number) => "$" + getShortFormattedNumber(val),
+        style: {
+          fontSize: "11px",
+          fontWeight: 500,
+        },
       },
     },
     {
       opposite: true,
-      title: { text: "Orders" },
       labels: {
-        formatter: (val: number) => val.toLocaleString(),
+        style: {
+          fontSize: "11px",
+          fontWeight: 500,
+        },
+        formatter: (val: number) => getShortFormattedNumber(val),
       },
     },
   ],
   tooltip: {
-    shared: true,
-    intersect: false,
-    y: [
-      {
-        formatter: (val: number) => "$" + val.toLocaleString(),
+    active: {
+      allowMultipleDataPointsSelection: true,
+    },
+    x: {
+      show: false,
+      style: {
+        fontSize: "12px",
+        fontWeight: 500,
       },
-      {
-        formatter: (val: number) => val.toLocaleString(),
+      formatter: (value: string) => {
+        const date = new Date(value);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
       },
-    ],
+    },
+    cssClass: "custom-apex-tooltip",
+
+    custom: ({ series, dataPointIndex, w }) => {
+      return renderTooltip({
+        date: w.globals.categoryLabels[dataPointIndex],
+        rows: [
+          {
+            label: "Revenue",
+            value: series[0][dataPointIndex],
+            color: w.globals.colors[0],
+            prefix: "$",
+          },
+          {
+            label: "Orders",
+            value: series[1][dataPointIndex],
+            color: w.globals.colors[1],
+          },
+        ],
+      });
+    },
   },
   legend: {
     position: "top",
   },
+ 
 };
 </script>
 
