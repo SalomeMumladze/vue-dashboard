@@ -28,3 +28,53 @@
 .apexcharts-legend-series {
   gap: 5px !important;
 }
+
+.ant-spin-container {
+  height: 100%;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+}
+
+.ant-spin-nested-loading,
+.ant-table-wrapper {
+  height: 100%;
+}
+
+.ant-table-wrapper .ant-table-pagination.ant-pagination {
+  padding: 13px;
+  margin: 0px !important;
+  border-top: 1px solid rgb(232, 232, 232);
+}
+.ant-table-wrapper .ant-table .ant-table-header,
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child,
+.ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:last-child
+  > *:last-child {
+  border-radius: 0;
+}
+
+.ant-card .ant-card-head {
+  padding: 0px 7px;
+}
+.ant-table-wrapper .ant-table-thead {
+  font-size: 13px;
+  font-weight: 400 !important;
+}
+
+.ant-table-wrapper .ant-table.ant-table-small {
+  font-size: 13px;
+}
+
+.ant-table-wrapper .ant-table-column-sorter-up,
+.ant-table-column-sorter-down {
+  font-size: 10px !important;
+}

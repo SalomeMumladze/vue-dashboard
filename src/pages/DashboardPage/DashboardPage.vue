@@ -126,18 +126,12 @@ const loading = false;
       </a-col>
     </a-row>
     <a-row :gutter="16" class="mb-6">
-      <a-col :xs="24" :sm="24" :md="12" :lg="12">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]">
         <Table />
       </a-col>
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"><Chart /> </a-col>
-    </a-row>
-    <a-row :gutter="16" class="mb-6">
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
-    </a-row>
-    <a-row :gutter="16" class="mb-6">
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]"
+        ><Chart />
+      </a-col>
     </a-row>
     <a-row :gutter="16" class="mb-6">
       <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>

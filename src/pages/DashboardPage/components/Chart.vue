@@ -16,9 +16,42 @@ const metricColors: Record<keyof CardData, string> = {
 };
 
 const chartOptions = ref({
-  chart: { type: "bar" },
-  xaxis: { categories: cardDataByDate.map((d) => d.date) },
-  dataLabels: { enabled: true },
+  chart: {
+    type: "bar",
+    zoom: {
+      enabled: true,
+      type: "x",
+      autoScaleYaxis: false,
+      allowMouseWheelZoom: true,
+      zoomedArea: {
+        fill: {
+          color: "#90CAF9",
+          opacity: 0.4,
+        },
+        stroke: {
+          color: "#0D47A1",
+          opacity: 0.4,
+          width: 1,
+        },
+      },
+    },
+  },
+  grid: {
+    borderColor: "#E5E7EB",
+    strokeDashArray: 5,
+  },
+  xaxis: {
+    axisBorder: {
+      show: false,
+      color: "#E5E7EB",
+    },
+    axisTicks: {
+      show: true,
+      color: "#E5E7EB",
+    },
+    categories: cardDataByDate.map((d) => formatDate(d.date, "MMM DD yyyy")),
+  },
+  dataLabels: { enabled: false },
   yaxis: {
     labels: {
       formatter: (val: number, opts: any) => {
@@ -57,37 +90,39 @@ const chartOptions = ref({
       };
 
       return `
-        <div style="padding: 12px; background: white; border: 1px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-          <div style="font-weight: 600; margin-bottom: 8px; color: #1f2937;">${formatDate(
-            dateData.date,
-            "MMM DD yyyy"
-          )}</div>
-          <div style="margin-bottom: 4px;">
-            <span style="color: #6b7280; font-size: 13px;">Metric:</span>
-            <span style="font-weight: 500; margin-left: 4px; color: #1f2937;">${metricName}</span>
-          </div>
-          <div style="margin-bottom: 4px;">
-            <span style="color: #6b7280; font-size: 13px;">Current:</span>
-            <span style="font-weight: 600; margin-left: 4px; color: ${
-              metricColors[selectedMetric.value]
-            };">${formatValue(currentValue)}</span>
-          </div>
-          <div>
-            <span style="color: #6b7280; font-size: 13px;">Last Year:</span>
-            <span style="font-weight: 500; margin-left: 4px; color: #1f2937;">${
-              typeof lastYearValue === "number"
-                ? formatValue(lastYearValue)
-                : lastYearValue
-            }</span>
-          </div>
-          <div>
-            <span style="color: #6b7280; font-size: 13px;">Last Month:</span>
-            <span style="font-weight: 500; margin-left: 4px; color: #1f2937;">${
-              typeof lastMonth === "number" ? formatValue(lastMonth) : lastMonth
-            }</span>
-          </div>
-        </div>
-      `;
+  <div class='grid bg-transparent'>
+    <div class="font-semibold mb-2 text-white">${formatDate(
+      dateData.date,
+      "MMM DD yyyy"
+    )}</div>
+
+    <div class="gap-2 flex items-center">
+      <span class="text-gray-400 text-xs">Metric:</span>
+      <span class="font-medium text-white">${metricName}</span>
+    </div>
+
+    <div class="gap-2 flex items-center">
+      <span class="text-gray-400 text-xs">Current:</span>
+      <span class="font-medium text-white" >${formatValue(currentValue)}</span>
+    </div>
+
+    <div class="gap-2 flex items-center">
+      <span class="text-gray-400 text-xs">Last Year:</span>
+      <span class="font-medium text-white">${
+        typeof lastYearValue === "number"
+          ? formatValue(lastYearValue)
+          : lastYearValue
+      }</span>
+    </div>
+
+    <div class=" gap-2 flex items-center">
+      <span class="text-gray-400 text-xs">Last Month:</span>
+      <span class="font-medium text-white">${
+        typeof lastMonth === "number" ? formatValue(lastMonth) : lastMonth
+      }</span>
+    </div>
+  </div>
+`;
     },
   },
 });
@@ -100,12 +135,17 @@ const series = ref([
 </script>
 
 <template>
-  <a-card>
+  <a-card
+    title="Card title"
+    :bordered="false"
+    class="h-full"
+    :body-style="{ height: '370px' }"
+  >
     <ApexCharts
       type="bar"
       :options="chartOptions"
       :series="series"
-      height="350"
+      height="370"
     />
   </a-card>
 </template>
