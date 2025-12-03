@@ -2,6 +2,7 @@
 import VueApexCharts from "vue3-apexcharts";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import { renderTooltip } from "@/components/charts/CustomTooltip";
+import { formatDate } from "@/components/formatDate";
 
 const salesData = [
   { date: "2025-11-01", totalRevenue: 120000, totalOrders: 1100 },
@@ -11,6 +12,12 @@ const salesData = [
   { date: "2025-11-05", totalRevenue: 149200, totalOrders: 1285 },
   { date: "2025-11-06", totalRevenue: 158300, totalOrders: 1340 },
   { date: "2025-11-07", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-08", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-09", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-10", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-11", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-12", totalRevenue: 161500, totalOrders: 1380 },
+  { date: "2025-11-13", totalRevenue: 161500, totalOrders: 1380 },
 ];
 
 const series = [
@@ -53,6 +60,8 @@ const chartOptions = {
     strokeDashArray: 5,
   },
   xaxis: {
+    categories: salesData.map((d) => formatDate(d.date, "MMM DD yyyy")),
+    tickAmount: 3,
     axisBorder: {
       show: false,
       color: "#E5E7EB",
@@ -61,20 +70,8 @@ const chartOptions = {
       show: true,
       color: "#E5E7EB",
     },
-    categories: salesData.map((item) => item.date),
     labels: {
-      formatter: (value: string) => {
-        const date = new Date(value);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "2-digit",
-        });
-      },
-      style: {
-        fontSize: "11px",
-        fontWeight: 500,
-      },
+      rotate: 0,
     },
   },
   yaxis: [
@@ -102,26 +99,6 @@ const chartOptions = {
     active: {
       allowMultipleDataPointsSelection: true,
     },
-    x: {
-      show: true,
-      style: {
-        fontSize: "12px",
-        fontWeight: 500,
-      },
-      custom: (d) => {
-        console.log(d);
-      },
-
-      formatter: (value: string) => {
-        const date = new Date(value);
-        return date.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        });
-      },
-    },
-
     custom: ({ series, dataPointIndex, w }) => {
       return renderTooltip({
         date: w.globals.categoryLabels[dataPointIndex],
@@ -148,17 +125,21 @@ const chartOptions = {
 </script>
 
 <template>
-  <div class="bg-white rounded-xl shadow">
-    <div class="flex items-center justify-between gap-2 mb-3 px-4 pt-4">
-      <h2 class="text-lg font-semibold">Revenue & Orders</h2>
+  <a-card
+    title="Revenue & Orders"
+    :bordered="false"
+    class="h-full"
+    :body-style="{ height: '370px' }"
+  >
+    <template #extra>
       <a-range-picker size="middle" />
-    </div>
+    </template>
 
     <VueApexCharts
       type="area"
-      height="350"
+      height="370"
       :options="chartOptions"
       :series="series"
     />
-  </div>
+  </a-card>
 </template>

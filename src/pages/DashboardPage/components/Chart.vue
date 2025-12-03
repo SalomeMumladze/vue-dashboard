@@ -54,8 +54,8 @@ const chartOptions = computed<ApexOptions>(() => ({
     strokeDashArray: 5,
   },
   xaxis: {
-    categories: cardDataByDate.map((d) => formatDate(d.date, "MMM D")),
-    tickAmount: 5,
+    categories: cardDataByDate.map((d) => formatDate(d.date, "MMM DD yyyy")),
+    tickAmount: 3,
     axisBorder: {
       show: false,
       color: "#E5E7EB",
