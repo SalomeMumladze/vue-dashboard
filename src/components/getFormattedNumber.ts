@@ -22,5 +22,5 @@ export default function getFormattedNumber(
 
   const symbol = currencyConfig?.symbol || "";
 
-  return `${formattedValue}${symbol}`;
+  return `${symbol}${formattedValue}`;
 }

@@ -1,39 +1,52 @@
 <script setup lang="ts">
-import { cardDataByDate, CardData } from "./data";
+import { cardDataByDate, type CardData } from "./data";
 import ApexCharts from "vue3-apexcharts";
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import getFormattedNumber from "@/components/getFormattedNumber";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import { formatDate } from "@/components/formatDate";
+import type { ApexOptions } from "apexcharts";
 
-const selectedMetric = ref<keyof CardData>("conversionRate");
+type MetricKey = keyof CardData;
 
-const metricColors: Record<keyof CardData, string> = {
-  totalRevenue: "#1f77b4",
-  totalOrders: "#ff7f0e",
-  activeUsers: "#2ca02c",
-  conversionRate: "#d62728",
-};
+interface MetricOption {
+  value: MetricKey;
+  label: string;
+  color: string;
+}
 
-const chartOptions = ref({
+interface TooltipContext {
+  series: number[][];
+  seriesIndex: number;
+  dataPointIndex: number;
+  w: any;
+}
+
+const selectedMetric = ref<MetricKey>("totalRevenue");
+
+const METRIC_OPTIONS: MetricOption[] = [
+  { value: "totalRevenue", label: "Total Revenue", color: "#1f77b4" },
+  { value: "totalOrders", label: "Total Orders", color: "#ff7f0e" },
+  { value: "activeUsers", label: "Active Users", color: "#2ca02c" },
+  { value: "conversionRate", label: "Conversion Rate", color: "#d62728" },
+];
+
+const currentMetricOption = computed(
+  () => METRIC_OPTIONS.find((opt) => opt.value === selectedMetric.value)!
+);
+
+const series = computed(() => [
+  {
+    name: currentMetricOption.value.label,
+    data: cardDataByDate.map((d) => d.metrics[selectedMetric.value].current),
+  },
+]);
+
+const chartOptions = computed<ApexOptions>(() => ({
   chart: {
     type: "bar",
-    zoom: {
-      enabled: true,
-      type: "x",
-      autoScaleYaxis: false,
-      allowMouseWheelZoom: true,
-      zoomedArea: {
-        fill: {
-          color: "#90CAF9",
-          opacity: 0.4,
-        },
-        stroke: {
-          color: "#0D47A1",
-          opacity: 0.4,
-          width: 1,
-        },
-      },
+    toolbar: {
+      show: false,
     },
   },
   grid: {
@@ -41,6 +54,8 @@ const chartOptions = ref({
     strokeDashArray: 5,
   },
   xaxis: {
+    categories: cardDataByDate.map((d) => formatDate(d.date, "MMM D")),
+    tickAmount: 5,
     axisBorder: {
       show: false,
       color: "#E5E7EB",
@@ -49,98 +64,116 @@ const chartOptions = ref({
       show: true,
       color: "#E5E7EB",
     },
-    categories: cardDataByDate.map((d) => formatDate(d.date, "MMM DD yyyy")),
+    labels: {
+      rotate: 0,
+    },
   },
-  dataLabels: { enabled: false },
+  dataLabels: {
+    enabled: false,
+  },
   yaxis: {
     labels: {
-      formatter: (val: number, opts: any) => {
-        return getShortFormattedNumber(val);
-      },
+      formatter: (val: number) => getShortFormattedNumber(val),
     },
   },
   plotOptions: {
     bar: {
-      borderRadius: 12,
-      borderRadiusApplication: "start",
+      borderRadius: 3,
+      borderRadiusApplication: "end",
       columnWidth: "50%",
     },
   },
-  colors: [metricColors[selectedMetric.value]],
+  colors: [currentMetricOption.value.color],
   tooltip: {
-    custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
-      const dateData = cardDataByDate[dataPointIndex];
-      const metric = dateData.metrics[selectedMetric.value];
-      const metricName = selectedMetric.value
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, (str) => str.toUpperCase());
-
-      const currentValue = metric.current;
-      const lastYearValue = metric.lastYear || "N/A";
-      const lastMonth = metric.lastMonth || "N/A";
-      const unit = metric.unit || "";
-      const currency = metric.currency || "";
-
-      const formatValue = (val: number | string) => {
-        if (val === "N/A") return val;
-        const numVal = typeof val === "number" ? val : parseFloat(val);
-        if (currency) return `${currency} ${getFormattedNumber(numVal)}`;
-        if (unit) return `${getFormattedNumber(numVal)}${unit}`;
-        return getFormattedNumber(numVal);
-      };
-
-      return `
-  <div class='grid bg-transparent'>
-    <div class="font-semibold mb-2 text-white">${formatDate(
-      dateData.date,
-      "MMM DD yyyy"
-    )}</div>
-
-    <div class="gap-2 flex items-center">
-      <span class="text-gray-400 text-xs">Metric:</span>
-      <span class="font-medium text-white">${metricName}</span>
-    </div>
-
-    <div class="gap-2 flex items-center">
-      <span class="text-gray-400 text-xs">Current:</span>
-      <span class="font-medium text-white" >${formatValue(currentValue)}</span>
-    </div>
-
-    <div class="gap-2 flex items-center">
-      <span class="text-gray-400 text-xs">Last Year:</span>
-      <span class="font-medium text-white">${
-        typeof lastYearValue === "number"
-          ? formatValue(lastYearValue)
-          : lastYearValue
-      }</span>
-    </div>
-
-    <div class=" gap-2 flex items-center">
-      <span class="text-gray-400 text-xs">Last Month:</span>
-      <span class="font-medium text-white">${
-        typeof lastMonth === "number" ? formatValue(lastMonth) : lastMonth
-      }</span>
-    </div>
-  </div>
-`;
-    },
+    custom: createTooltipFormatter,
   },
-});
-const series = ref([
-  {
-    name: selectedMetric.value,
-    data: cardDataByDate.map((d) => d.metrics[selectedMetric.value].current),
-  },
-]);
+}));
+
+function formatMetricValue(
+  val: number | string,
+  currency?: string,
+  unit?: string
+): string {
+  if (val === "N/A") return val;
+
+  const numVal = typeof val === "number" ? val : parseFloat(val);
+
+  if (currency) {
+    return getFormattedNumber(numVal, currency);
+  }
+
+  if (unit) {
+    return `${getFormattedNumber(numVal)}${unit}`;
+  }
+
+  return getFormattedNumber(numVal);
+}
+
+function createTooltipFormatter({ dataPointIndex }: TooltipContext): string {
+  const dateData = cardDataByDate[dataPointIndex];
+  const metric = dateData.metrics[selectedMetric.value];
+  const metricName = currentMetricOption.value.label;
+
+  const currentValue = metric.current;
+  const lastYearValue = metric.lastYear ?? "N/A";
+  const lastMonth = metric.lastMonth ?? "N/A";
+  const { unit = "", currency = "" } = metric;
+
+  const formatValue = (val: number | string) =>
+    formatMetricValue(val, currency, unit);
+
+  return `
+    <div class="grid bg-transparent p-3">
+      <div class="font-semibold mb-2 text-white">
+        ${formatDate(dateData.date, "MMM DD yyyy")}
+      </div>
+
+      <div class="gap-2 flex items-center mb-1">
+        <span class="text-gray-400 text-xs">Metric:</span>
+        <span class="font-medium text-white">${metricName}</span>
+      </div>
+
+      <div class="gap-2 flex items-center mb-1">
+        <span class="text-gray-400 text-xs">Current:</span>
+        <span class="font-medium text-white">${formatValue(currentValue)}</span>
+      </div>
+
+      <div class="gap-2 flex items-center mb-1">
+        <span class="text-gray-400 text-xs">Last Year:</span>
+        <span class="font-medium text-white">${formatValue(
+          lastYearValue
+        )}</span>
+      </div>
+
+      <div class="gap-2 flex items-center">
+        <span class="text-gray-400 text-xs">Last Month:</span>
+        <span class="font-medium text-white">${formatValue(lastMonth)}</span>
+      </div>
+    </div>
+  `;
+}
+
+const handleMetricChange = (value: MetricKey) => {
+  selectedMetric.value = value;
+};
 </script>
 
 <template>
   <a-card
-    title="Card title"
+    title="Metrics Overview"
     :bordered="false"
     class="h-full"
     :body-style="{ height: '370px' }"
   >
+    <template #extra>
+      <a-select
+        v-model:value="selectedMetric"
+        :options="METRIC_OPTIONS"
+        @change="handleMetricChange"
+        class="max-w-40"
+      />
+    </template>
+
     <ApexCharts
       type="bar"
       :options="chartOptions"

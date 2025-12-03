@@ -80,7 +80,7 @@ const loading = false;
 
 <template>
   <Layout>
-    <a-row :gutter="16" class="mb-6">
+    <a-row :gutter="16">
       <a-col
         v-for="widget in widgets"
         :key="widget.title"
@@ -88,6 +88,7 @@ const loading = false;
         :sm="12"
         :md="8"
         :lg="6"
+        class="mb-4"
       >
         <a-card
           class="border !border-gray-200 border-solid h-full"
@@ -126,16 +127,18 @@ const loading = false;
       </a-col>
     </a-row>
     <a-row :gutter="16" class="mb-6">
-      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]">
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px] mb-4 md:mb-0">
         <Table />
       </a-col>
-      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]"
-        ><Chart />
+
+      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]">
+        <Chart />
       </a-col>
     </a-row>
-    <a-row :gutter="16" class="mb-6">
+
+    <!-- <a-row :gutter="16" class="mb-6">
       <a-col :xs="24" :sm="24" :md="12" :lg="12"> <TotalSalesArea /></a-col>
       <a-col :xs="24" :sm="24" :md="12" :lg="12"><NetworkPieChart /></a-col>
-    </a-row>
+    </a-row> -->
   </Layout>
 </template>
