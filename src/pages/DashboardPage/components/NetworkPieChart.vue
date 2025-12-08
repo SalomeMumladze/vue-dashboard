@@ -1,13 +1,22 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, h } from "vue";
 import VueApexCharts from "vue3-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import getFormattedNumber from "@/components/getFormattedNumber";
+
+import facebookImg from "@/assets/img/networks/facebook.png";
+import googleImg from "@/assets/img/networks/google.png";
+import tiktokImg from "@/assets/img/networks/tiktok.png";
+import snapchatImg from "@/assets/img/networks/snapchat.png";
+import twitterImg from "@/assets/img/networks/twitter.png";
 
 interface NetworkData {
   network: string;
   income: number;
   sales: number;
+}
+
+interface NetworkConfig {
   color: string;
   icon: string;
 }
@@ -20,41 +29,54 @@ interface TooltipContext {
   w: any;
 }
 
+const NETWORK_CONFIG: Record<string, NetworkConfig> = {
+  Facebook: {
+    color: "#0ea5e9",
+    icon: facebookImg,
+  },
+  Google: {
+    color: "#06b6d4",
+    icon: googleImg,
+  },
+  TikTok: {
+    color: "#14b8a6",
+    icon: tiktokImg,
+  },
+  Snapchat: {
+    color: "#10b981",
+    icon: snapchatImg,
+  },
+  Twitter: {
+    color: "#22c55e",
+    icon: twitterImg,
+  },
+};
+
 const NETWORK_DATA: NetworkData[] = [
   {
     network: "Facebook",
     income: 12500,
     sales: 430,
-    color: "#1877F2",
-    icon: "facebook",
   },
   {
     network: "Google",
     income: 9800,
     sales: 390,
-    color: "#34A853",
-    icon: "google",
   },
   {
     network: "TikTok",
     income: 7400,
     sales: 310,
-    color: "#69C9D0",
-    icon: "tiktok",
   },
   {
     network: "Snapchat",
     income: 5400,
     sales: 220,
-    color: "#FFAC00",
-    icon: "snapchat",
   },
   {
     network: "Twitter",
     income: 2600,
     sales: 120,
-    color: "#1DA1F2",
-    icon: "twitter",
   },
 ];
 
@@ -71,21 +93,21 @@ const series = computed(() =>
 
 const chartLabels = computed(() => NETWORK_DATA.map((item) => item.network));
 
-const chartColors = computed(() => NETWORK_DATA.map((item) => item.color));
+const chartColors = computed(() =>
+  NETWORK_DATA.map((item) => NETWORK_CONFIG[item.network]?.color || "#000")
+);
 
 const chartOptions = computed<ApexOptions>(() => ({
   labels: chartLabels.value,
   colors: chartColors.value,
 
   legend: {
-    position: "left",
-    fontSize: "14px",
+    show: true,
+    fontSize: "10px",
+    position: "bottom",
     markers: {
-      width: 12,
-      height: 12,
-      radius: 12,
+      size: 5,
     },
-    formatter: createLegendFormatter,
   },
 
   stroke: {
@@ -101,7 +123,7 @@ const chartOptions = computed<ApexOptions>(() => ({
           show: true,
           value: {
             show: true,
-            formatter: (val: number) => getFormattedNumber(val),
+            formatter: (val: string) => getFormattedNumber(Number(val), "USD"),
           },
           total: {
             show: true,
@@ -111,7 +133,7 @@ const chartOptions = computed<ApexOptions>(() => ({
                 (a: number, b: number) => a + b,
                 0
               );
-              return getFormattedNumber(total);
+              return getFormattedNumber(total, "USD");
             },
           },
         },
@@ -143,35 +165,6 @@ const chartOptions = computed<ApexOptions>(() => ({
   },
 }));
 
-function getNetworkIconPath(networkName: string): string {
-  const network = NETWORK_DATA.find(
-    (n) => n.network.toLowerCase() === networkName.toLowerCase()
-  );
-  return `/src/assets/img/networks/${
-    network?.icon || networkName.toLowerCase()
-  }.png`;
-}
-
-function createLegendFormatter(label: string, opts: any): string {
-  const index = opts.seriesIndex;
-  const value = opts.w.globals.series[index];
-  const imgSrc = getNetworkIconPath(label);
-
-  return `
-    <div class="grid items-center justify-between w-full grid-cols-[auto_1fr_auto] gap-2">
-      <img
-        src="${imgSrc}"
-        alt="${label}"
-        width="18"
-        height="18"
-        class="object-contain"
-      />
-      <span>${label}</span>
-      <span class="font-medium text-base">${getFormattedNumber(value)}$</span>
-    </div>
-  `;
-}
-
 function createTooltipFormatter({
   series,
   seriesIndex,
@@ -182,11 +175,12 @@ function createTooltipFormatter({
   const total = series.reduce((a: number, b: number) => a + b, 0);
   const percent = ((value / total) * 100).toFixed(1);
 
-  const color = w.config.colors?.[seriesIndex] ?? "#000";
-  const imgSrc = getNetworkIconPath(label);
+  const config = NETWORK_CONFIG[label];
+  const color = config?.color || "#000";
+  const imgSrc = config?.icon || "";
 
   return `
-    <div class="p-3">
+    <div>
       <div class="flex items-center gap-2 font-semibold text-sm mb-2">
         <span
           class="w-1 h-4 inline-block rounded-xl"
@@ -194,7 +188,7 @@ function createTooltipFormatter({
         ></span>
         <img
           src="${imgSrc}"
-          alt="${label}"
+          alt="${label} icon"
           width="16"
           height="16"
           class="object-contain"
@@ -203,26 +197,57 @@ function createTooltipFormatter({
       </div>
 
       <div class="text-sm text-white">
-        <strong>${value.toLocaleString()}</strong>
+        <strong>${getFormattedNumber(value, "USD")}</strong>
         <span class="text-gray-400 ml-1">(${percent}%)</span>
       </div>
     </div>
   `;
 }
+
+const columns = [
+  {
+    title: "Network",
+    dataIndex: "network",
+    key: "network",
+    ellipsis: true,
+    customRender: ({ record }: { record: NetworkData }) => {
+      const config = NETWORK_CONFIG[record.network];
+      return h("div", { class: "flex items-center gap-2 text-xs" }, [
+        h("img", {
+          src: config?.icon,
+          width: 18,
+          height: 18,
+          class: "object-contain",
+          alt: `${record.network} logo`,
+        }),
+        h("span", record.network),
+      ]);
+    },
+  },
+  {
+    title: "Income",
+    dataIndex: "income",
+    key: "income",
+    customRender: ({ value }: { value: number }) =>
+      getFormattedNumber(value, "USD"),
+  },
+  {
+    title: "Sales",
+    dataIndex: "sales",
+    key: "sales",
+    customRender: ({ value }: { value: number }) =>
+      getFormattedNumber(value, "USD"),
+  },
+];
 </script>
 
 <template>
-  <a-card
-    title="Network Performance"
-    :bordered="false"
-    class="h-full"
-    :body-style="{ height: '370px' }"
-  >
+  <a-card title="Network Performance" :bordered="false" class="h-full">
     <template #extra>
       <a-radio-group
         v-model:value="selectedMetric"
         size="small"
-        button-style="solid"
+        aria-label="Select metric to display"
       >
         <a-radio-button value="income">Income</a-radio-button>
         <a-radio-button value="sales">Sales</a-radio-button>
@@ -231,9 +256,17 @@ function createTooltipFormatter({
 
     <VueApexCharts
       type="donut"
-      height="370"
+      height="350"
       :options="chartOptions"
       :series="series"
+    />
+    <a-table
+      class="mt-6"
+      :columns="columns"
+      :data-source="NETWORK_DATA"
+      row-key="network"
+      size="middle"
+      :pagination="false"
     />
   </a-card>
 </template>

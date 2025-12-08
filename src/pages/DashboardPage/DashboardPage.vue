@@ -13,6 +13,7 @@ import getFormattedNumber from "@/components/getFormattedNumber";
 import Table from "./components/Table.vue";
 import Chart from "./components/Chart.vue";
 import NetworkPieChart from "./components/NetworkPieChart.vue";
+import AgeChart from "./components/AgeChart.vue";
 import TotalSalesArea from "./components/TotalSalesArea.vue";
 
 interface Widget {
@@ -137,10 +138,13 @@ const loading = false;
     </a-row>
 
     <a-row :gutter="16" class="mb-6">
-      <a-col :xs="24" :sm="24" :md="12" :lg="12" class="h-[430px]">
-        <TotalSalesArea
-      /></a-col>
-      <a-col :xs="24" :sm="24" :md="12" :lg="12"  class="h-[430px]"><NetworkPieChart /></a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="16">
+        <div class="mb-4 md:mb-0 grid gap-4 h-fit">
+          <TotalSalesArea class="h-[430px]" />
+          <AgeChart />
+        </div>
+      </a-col>
+      <a-col :xs="24" :sm="24" :md="12" :lg="8"><NetworkPieChart /></a-col>
     </a-row>
   </Layout>
 </template>

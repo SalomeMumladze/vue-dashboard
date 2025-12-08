@@ -129,7 +129,7 @@ const chartOptions = {
     title="Revenue & Orders"
     :bordered="false"
     class="h-full"
-    :body-style="{ height: '370px' }"
+    :body-style="{ height: 'fit-contents' }"
   >
     <template #extra>
       <a-range-picker size="middle" />

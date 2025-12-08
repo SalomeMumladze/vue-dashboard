@@ -64,7 +64,7 @@ const logout = () => {
       </a-layout-header>
 
       <a-layout-content
-        class="rounded-md sm:p-4 p-2"
+        class="rounded-md sm:p-4 p-8"
         style="height: 100%; overflow-y: auto"
       >
         <slot />

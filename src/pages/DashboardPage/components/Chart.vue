@@ -123,29 +123,29 @@ function createTooltipFormatter({ dataPointIndex }: TooltipContext): string {
     formatMetricValue(val, currency, unit);
 
   return `
-    <div class="grid bg-transparent p-3">
+    <div class="grid ">
       <div class="font-semibold mb-2 text-white">
         ${formatDate(dateData.date, "MMM DD yyyy")}
       </div>
 
-      <div class="gap-2 flex items-center mb-1">
-        <span class="text-gray-400 text-xs">Metric:</span>
+      <div class="gap-2 flex items-center">
+        <span class="text-gray-400 text-sm font-normal">Metric:</span>
         <span class="font-medium text-white">${metricName}</span>
       </div>
 
-      <div class="gap-2 flex items-center mb-1">
-        <span class="text-gray-400 text-xs">Current:</span>
+      <div class="gap-2 flex items-center">
+        <span class="text-gray-400 text-sm font-normal">Current:</span>
         <span class="font-medium text-white">${formatValue(currentValue)}</span>
       </div>
 
-      <div class="gap-2 flex items-center mb-1">
-        <span class="text-gray-400 text-xs">Last Year:</span>
+      <div class="gap-2 flex items-center font-normal">
+        <span class="text-gray-400 text-sm">Last Year:</span>
         <span class="font-medium text-white">${formatValue(
           lastYearValue
         )}</span>
       </div>
 
-      <div class="gap-2 flex items-center">
+      <div class="gap-2 flex items-center font-normal">
         <span class="text-gray-400 text-xs">Last Month:</span>
         <span class="font-medium text-white">${formatValue(lastMonth)}</span>
       </div>
