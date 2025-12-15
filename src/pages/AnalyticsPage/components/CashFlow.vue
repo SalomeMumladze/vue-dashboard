@@ -14,7 +14,17 @@ type MetricType = "weekly" | "daily";
 const selectedMetric = ref<MetricType>("weekly");
 
 const cashFlowData = {
-  data: [
+  weekly: [
+    { date: "2024-12-30", income: 8500, expense: -3200 },
+    { date: "2025-01-06", income: 9200, expense: -4100 },
+    { date: "2025-01-13", income: 10500, expense: -4800 },
+    { date: "2025-01-20", income: 8900, expense: -3900 },
+    { date: "2025-01-27", income: 11200, expense: -5200 },
+    { date: "2025-02-03", income: 9800, expense: -4300 },
+    { date: "2025-02-10", income: 10300, expense: -4600 },
+    { date: "2025-02-17", income: 12100, expense: -5800 },
+  ],
+  daily: [
     { date: "2025-01-01", income: 1200, expense: -450 },
     { date: "2025-01-02", income: 980, expense: -300 },
     { date: "2025-01-03", income: 1500, expense: -920 },
@@ -43,22 +53,30 @@ const cashFlowData = {
     { date: "2025-01-31", income: 1400, expense: -1050 },
     { date: "2025-02-02", income: 1400, expense: -1050 },
   ],
+  totals: {
+    income: 1410400,
+    income_change: 98,
+    expense_change: 12,
+    expense: 110050,
+  },
 };
+
+const currentData = computed(() => cashFlowData[selectedMetric.value]);
 
 const series = computed(() => [
   {
     name: "Income (Negative Gap)",
-    data: cashFlowData.data.map(() => 80),
+    data: currentData.value.map(() => 80),
     color: "white",
   },
   {
     name: "Income",
-    data: cashFlowData.data.map((d) => (d.income > 0 ? d.income : 0)),
+    data: currentData.value.map((d) => (d.income > 0 ? d.income : 0)),
     color: "#1E40AF",
   },
   {
     name: "Expense",
-    data: cashFlowData.data.map((d) => (d.expense < 0 ? d.expense : 0)),
+    data: currentData.value.map((d) => (d.expense < 0 ? d.expense : 0)),
     color: "#F59E0B",
   },
 ]);
@@ -77,7 +95,7 @@ const chartOptions = computed(() => ({
   plotOptions: {
     bar: {
       horizontal: false,
-
+      borderRadiusApplication: "around",
       borderRadius: 3,
     },
   },
@@ -100,10 +118,12 @@ const chartOptions = computed(() => ({
       color: "#E5E7EB",
     },
     tickAmount: 10,
-    categories: cashFlowData?.data?.map((d) => formatDate(d.date, "MMM D")),
+    categories: currentData.value.map((d) =>
+      formatDate(d.date, selectedMetric.value === "weekly" ? "MMM D" : "MMM D")
+    ),
   },
   yaxis: {
-    categories: cashFlowData.data.map((d) => d.date),
+    categories: currentData.value.map((d) => d.date),
     labels: {
       formatter: (val: number) => getShortFormattedNumber(val),
     },
@@ -112,7 +132,7 @@ const chartOptions = computed(() => ({
     shared: true,
     intersect: false,
     custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-      const item = cashFlowData.data[dataPointIndex];
+      const item = currentData.value[dataPointIndex];
 
       if (!item) return "";
 
@@ -175,14 +195,14 @@ const chartOptions = computed(() => ({
       </div>
     </template>
 
-    <div class="lg:gap-4 md:flex grid items-center">
+    <div class="md:flex grid items-center">
       <div class="md:col-span-2 order-2 md:order-1 w-full">
         <ApexCharts :options="chartOptions" :series="series" height="270" />
       </div>
       <div
-        class="md:col-span-1 order-1 md:order-2 md:pl-4 flex items-center justify-center p-4 md:w-fit w-full"
+        class="md:col-span-1 order-1 md:order-2 md:pl-4 flex items-center justify-center p-4 md:w-fit w-full min-w-[20%]"
       >
-        <div class="grid sm:gap-8 gap-4 grid-cols-1 md:w-fit w-full">
+        <div class="grid gap-4 grid-cols-1 md:w-fit w-full">
           <div class="flex items-center gap-3 sm:gap-4">
             <div class="rounded-md bg-[#1E40AF] p-2.5 sm:p-3 flex-shrink-0">
               <ArrowDownOutlined
@@ -192,17 +212,21 @@ const chartOptions = computed(() => ({
             </div>
             <div class="grid gap-1 sm:gap-2 min-w-0">
               <p class="text-xs sm:text-sm font-normal text-gray-500">Income</p>
-              <div class="flex items-end gap-2 sm:gap-4 flex-wrap">
+              <div class="flex items-end gap-2 flex-wrap">
                 <span class="sm:text-base lg:text-3xl font-semibold truncate">
-                  {{ getFormattedNumber(298378233, "USD") }}
+                  {{ getFormattedNumber(cashFlowData?.totals.income, "USD") }}
                 </span>
                 <a-tag
-                  :color="232 >= 0 ? 'green' : 'red'"
+                  :color="
+                    cashFlowData?.totals.income_change >= 0 ? 'green' : 'red'
+                  "
                   type="ghost"
                   class="!flex !items-center !border-none !font-medium !rounded-xl !px-2 !py-0.5"
                 >
                   <span class="text-xs sm:text-sm">
-                    {{ getFormattedNumber(1223, "USD") }}
+                    {{
+                      getFormattedNumber(cashFlowData?.totals.income_change)
+                    }}%
                   </span>
                   <component
                     :is="123 >= 0 ? ArrowUpOutlined : ArrowDownOutlined"
@@ -226,9 +250,9 @@ const chartOptions = computed(() => ({
               <p class="text-xs sm:text-sm font-normal text-gray-500">
                 Expense
               </p>
-              <div class="flex items-end gap-2 sm:gap-4 flex-wrap">
+              <div class="flex items-end gap-2 flex-wrap">
                 <span class="sm:text-base lg:text-3xl font-semibold truncate">
-                  {{ getFormattedNumber(298378233, "USD") }}
+                  {{ getFormattedNumber(cashFlowData?.totals.expense, "USD") }}
                 </span>
                 <a-tag
                   :color="232 >= 0 ? 'green' : 'red'"
@@ -236,10 +260,16 @@ const chartOptions = computed(() => ({
                   class="!flex !items-center !border-none !font-medium !rounded-xl !px-2 !py-0.5"
                 >
                   <span class="text-xs sm:text-sm">
-                    {{ getFormattedNumber(1223, "USD") }}
+                    {{
+                      getFormattedNumber(cashFlowData?.totals.expense_change)
+                    }}%
                   </span>
                   <component
-                    :is="123 >= 0 ? ArrowUpOutlined : ArrowDownOutlined"
+                    :is="
+                      cashFlowData?.totals.expense_change >= 0
+                        ? ArrowUpOutlined
+                        : ArrowDownOutlined
+                    "
                     class="text-[10px] sm:text-xs ml-1"
                   />
                 </a-tag>
