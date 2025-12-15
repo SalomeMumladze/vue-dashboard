@@ -65,7 +65,6 @@ function createTooltipFormatter({
 
   return `
     <div>
-
       <div class='text-white font-sm font-normal flex items-center gap-2' >
        <span
           class="w-1 h-4 inline-block rounded-xl"

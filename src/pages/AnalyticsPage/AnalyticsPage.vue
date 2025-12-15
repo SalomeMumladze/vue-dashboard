@@ -2,6 +2,8 @@
 import Layout from "@/components/Layout.vue";
 import { ref } from "vue";
 import VueApexCharts from "vue3-apexcharts";
+import Grid from "./components/Grid.vue";
+import CashFlow from "./components/CashFlow.vue";
 
 const revenueData = ref([100, 200, 150, 300, 250, 400, 350]);
 const chartOptions = ref({
@@ -13,11 +15,15 @@ const chartOptions = ref({
 <template>
   <Layout>
     <h1>Analytics</h1>
-    <vue-apex-charts
+    <CashFlow />
+    <!--
+      <vue-apex-charts
       type="line"
       height="350"
       :options="chartOptions"
       :series="[{ name: 'Revenue', data: revenueData }]"
     />
+    -->
+    <Grid />
   </Layout>
 </template>

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "@/pages/LoginPage.vue";
 import DashboardPage from "@/pages/DashboardPage/DashboardPage.vue";
-import AnalyticsPage from "@/pages/AnalyticsPage.vue";
+import AnalyticsPage from "@/pages/AnalyticsPage/AnalyticsPage.vue";
 import ReportsPage from "@/pages/ReportsPage.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import NotFound from "@/pages/NotFound.vue";
