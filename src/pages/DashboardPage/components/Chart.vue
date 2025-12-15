@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { cardDataByDate, type CardData } from "./data";
 import ApexCharts from "vue3-apexcharts";
-import { ref, computed, watch } from "vue";
+import { ref, computed, onMounted, nextTick } from "vue";
 import getFormattedNumber from "@/components/getFormattedNumber";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import { formatDate } from "@/components/formatDate";
@@ -23,6 +23,7 @@ interface TooltipContext {
 }
 
 const selectedMetric = ref<MetricKey>("totalRevenue");
+const chartKey = ref(0);
 
 const METRIC_OPTIONS: MetricOption[] = [
   { value: "totalRevenue", label: "Total Revenue", color: "#1f77b4" },
@@ -55,7 +56,6 @@ const chartOptions = computed<ApexOptions>(() => ({
   },
   xaxis: {
     categories: cardDataByDate.map((d) => formatDate(d.date, "MMM DD yyyy")),
-    tickAmount: 3,
     axisBorder: {
       show: false,
       color: "#E5E7EB",
@@ -66,6 +66,9 @@ const chartOptions = computed<ApexOptions>(() => ({
     },
     labels: {
       rotate: 0,
+      style: {
+        fontSize: "11px",
+      },
     },
   },
   dataLabels: {
@@ -155,7 +158,18 @@ function createTooltipFormatter({ dataPointIndex }: TooltipContext): string {
 
 const handleMetricChange = (value: MetricKey) => {
   selectedMetric.value = value;
+  nextTick(() => {
+    chartKey.value++;
+  });
 };
+
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(() => {
+      chartKey.value++;
+    }, 100);
+  });
+});
 </script>
 
 <template>
@@ -175,6 +189,7 @@ const handleMetricChange = (value: MetricKey) => {
     </template>
 
     <ApexCharts
+      :key="chartKey"
       type="bar"
       :options="chartOptions"
       :series="series"

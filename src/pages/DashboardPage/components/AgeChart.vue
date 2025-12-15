@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, onMounted, nextTick } from "vue";
 import VueApexCharts from "vue3-apexcharts";
 import type { ApexOptions } from "apexcharts";
 
@@ -12,6 +12,20 @@ interface AgeGroupData {
 interface Gender {
   color: string;
 }
+
+const chartKey = ref(0);
+
+nextTick(() => {
+  chartKey.value++;
+});
+
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(() => {
+      chartKey.value++;
+    }, 100);
+  });
+});
 
 const audienceData: AgeGroupData[] = [
   { ageGroup: "18-24", male: 8.5, female: 9.2 },
@@ -173,26 +187,33 @@ const totalFemale = computed(() =>
   <a-card
     :bordered="false"
     class="h-full"
-    :body-style="{ height: 'fit-contents' }"
+    :body-style="{ height: 'fit-content' }"
   >
-    <div class="grid grid-cols-2 items-center gap-2 w-full">
-      <VueApexCharts
-        type="bar"
-        :options="chartOptions"
-        :series="series"
-        height="230px"
-      />
+    <div
+      class="flex flex-col lg:grid lg:grid-cols-2 items-start lg:items-center gap-4 lg:gap-2 w-full"
+    >
+      <div class="w-full">
+        <VueApexCharts
+          :key="chartKey"
+          type="bar"
+          :options="chartOptions"
+          :series="series"
+          height="230px"
+        />
+      </div>
 
-      <div class="p-4 grid gap-6">
-        <p class="text-base font-medium">Audience Age & Gender</p>
-        <div class="grid sm:grid-cols-2 grid-cols-1 items-start gap-4">
-          <div class="grid items-center gap-4">
+      <div class="w-full p-2 sm:p-4 grid gap-4 sm:gap-6">
+        <p class="text-sm sm:text-base font-medium">Audience Age & Gender</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 items-start gap-3 sm:gap-4">
+          <div class="grid items-center gap-3 sm:gap-4">
             <div class="flex items-center gap-2">
               <div class="flex items-center gap-1.5">
                 <svg width="16" height="16" class="text-blue-500">
                   <circle cx="8" cy="8" r="4" fill="currentColor" />
                 </svg>
-                <span class="text-sm font-medium text-gray-700">Male</span>
+                <span class="text-xs sm:text-sm font-medium text-gray-700"
+                  >Male</span
+                >
               </div>
               <span
                 class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-1 rounded"
@@ -200,21 +221,23 @@ const totalFemale = computed(() =>
                 {{ totalMale.toFixed(1) }}%
               </span>
             </div>
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
+            <div class="text-center p-3 sm:p-4 bg-blue-50 rounded-lg">
               <p class="text-xs text-gray-600 mb-1">Male Audience</p>
-              <p class="text-2xl font-bold text-blue-600">
+              <p class="text-xl sm:text-2xl font-bold text-blue-600">
                 {{ totalMale.toFixed(1) }}%
               </p>
             </div>
           </div>
 
-          <div class="grid items-center gap-4">
+          <div class="grid items-center gap-3 sm:gap-4">
             <div class="flex items-center gap-2">
               <div class="flex items-center gap-1.5">
                 <svg width="16" height="16" class="text-emerald-500">
                   <circle cx="8" cy="8" r="4" fill="currentColor" />
                 </svg>
-                <span class="text-sm font-medium text-gray-700">Female</span>
+                <span class="text-xs sm:text-sm font-medium text-gray-700"
+                  >Female</span
+                >
               </div>
               <span
                 class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded"
@@ -222,9 +245,9 @@ const totalFemale = computed(() =>
                 {{ totalFemale.toFixed(1) }}%
               </span>
             </div>
-            <div class="text-center p-4 bg-emerald-50 rounded-lg">
+            <div class="text-center p-3 sm:p-4 bg-emerald-50 rounded-lg">
               <p class="text-xs text-gray-600 mb-1">Female Audience</p>
-              <p class="text-2xl font-bold text-emerald-600">
+              <p class="text-xl sm:text-2xl font-bold text-emerald-600">
                 {{ totalFemale.toFixed(1) }}%
               </p>
             </div>

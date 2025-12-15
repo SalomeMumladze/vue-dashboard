@@ -139,7 +139,7 @@ const loading = false;
 
     <a-row :gutter="16" class="mb-6">
       <a-col :xs="24" :sm="24" :md="12" :lg="16">
-        <div class="mb-4 md:mb-0 grid gap-4 h-fit">
+        <div class="mb-4 md:mb-0 h-fit flex flex-col gap-6">
           <TotalSalesArea class="h-[430px]" />
           <AgeChart />
         </div>

@@ -3,6 +3,21 @@ import VueApexCharts from "vue3-apexcharts";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import { renderTooltip } from "@/components/charts/CustomTooltip";
 import { formatDate } from "@/components/formatDate";
+import { ref, computed, onMounted, nextTick } from "vue";
+
+const chartKey = ref(0);
+
+nextTick(() => {
+  chartKey.value++;
+});
+
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(() => {
+      chartKey.value++;
+    }, 100);
+  });
+});
 
 const salesData = [
   { date: "2025-11-01", totalRevenue: 120000, totalOrders: 1100 },
@@ -72,6 +87,9 @@ const chartOptions = {
     },
     labels: {
       rotate: 0,
+      style: {
+        fontSize: "11px",
+      },
     },
   },
   yaxis: [
@@ -136,6 +154,7 @@ const chartOptions = {
     </template>
 
     <VueApexCharts
+      :key="chartKey"
       type="area"
       height="370"
       :options="chartOptions"
