@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, nextTick, watch } from "vue";
 import ApexCharts from "vue3-apexcharts";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import {
@@ -12,6 +12,7 @@ import { formatDate } from "@/components/formatDate";
 
 type MetricType = "weekly" | "daily";
 const selectedMetric = ref<MetricType>("weekly");
+const chartKey = ref(0); 
 
 const cashFlowData = {
   weekly: [
@@ -170,6 +171,20 @@ const chartOptions = computed(() => ({
 
   legend: { show: false },
 }));
+
+onMounted(() => {
+  nextTick(() => {
+    setTimeout(() => {
+      chartKey.value++;
+    }, 100);
+  });
+});
+
+watch(selectedMetric, () => {
+  nextTick(() => {
+    chartKey.value++;
+  });
+});
 </script>
 
 <template>
@@ -195,14 +210,21 @@ const chartOptions = computed(() => ({
       </div>
     </template>
 
-    <div class="md:flex grid items-center">
-      <div class="md:col-span-2 order-2 md:order-1 w-full">
-        <ApexCharts :options="chartOptions" :series="series" height="270" />
+    <div class="flex flex-col md:flex-row items-stretch">
+      <div class="w-full md:flex-1 order-2 md:order-1">
+        <ApexCharts
+          :key="chartKey"
+          :options="chartOptions"
+          :series="series"
+          height="270"
+        />
       </div>
+
+      <!-- Stats Container -->
       <div
-        class="md:col-span-1 order-1 md:order-2 md:pl-4 flex items-center justify-center p-4 md:w-fit w-full min-w-[20%]"
+        class="order-1 md:order-2 md:w-64 lg:w-72 md:pl-4 flex items-center justify-center p-4"
       >
-        <div class="grid gap-4 grid-cols-1 md:w-fit w-full">
+        <div class="grid gap-4 grid-cols-1 w-full">
           <div class="flex items-center gap-3 sm:gap-4">
             <div class="rounded-md bg-[#1E40AF] p-2.5 sm:p-3 flex-shrink-0">
               <ArrowDownOutlined
@@ -213,7 +235,9 @@ const chartOptions = computed(() => ({
             <div class="grid gap-1 sm:gap-2 min-w-0">
               <p class="text-xs sm:text-sm font-normal text-gray-500">Income</p>
               <div class="flex items-end gap-2 flex-wrap">
-                <span class="sm:text-base lg:text-3xl font-semibold truncate">
+                <span
+                  class="text-base lg:text-2xl xl:text-3xl font-semibold truncate"
+                >
                   {{ getFormattedNumber(cashFlowData?.totals.income, "USD") }}
                 </span>
                 <a-tag
@@ -229,7 +253,11 @@ const chartOptions = computed(() => ({
                     }}%
                   </span>
                   <component
-                    :is="123 >= 0 ? ArrowUpOutlined : ArrowDownOutlined"
+                    :is="
+                      cashFlowData?.totals.income_change >= 0
+                        ? ArrowUpOutlined
+                        : ArrowDownOutlined
+                    "
                     class="text-[10px] sm:text-xs ml-1"
                   />
                 </a-tag>
@@ -251,11 +279,15 @@ const chartOptions = computed(() => ({
                 Expense
               </p>
               <div class="flex items-end gap-2 flex-wrap">
-                <span class="sm:text-base lg:text-3xl font-semibold truncate">
+                <span
+                  class="text-base lg:text-2xl xl:text-3xl font-semibold truncate"
+                >
                   {{ getFormattedNumber(cashFlowData?.totals.expense, "USD") }}
                 </span>
                 <a-tag
-                  :color="232 >= 0 ? 'green' : 'red'"
+                  :color="
+                    cashFlowData?.totals.expense_change >= 0 ? 'red' : 'green'
+                  "
                   type="ghost"
                   class="!flex !items-center !border-none !font-medium !rounded-xl !px-2 !py-0.5"
                 >
