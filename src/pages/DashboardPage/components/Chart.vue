@@ -56,6 +56,8 @@ const chartOptions = computed<ApexOptions>(() => ({
   },
   xaxis: {
     categories: cardDataByDate.map((d) => formatDate(d.date, "MMM DD yyyy")),
+    tickAmount: Math.min(6, cardDataByDate.length),
+    tickPlacement: "between",
     axisBorder: {
       show: false,
       color: "#E5E7EB",
@@ -67,7 +69,7 @@ const chartOptions = computed<ApexOptions>(() => ({
     labels: {
       rotate: 0,
       style: {
-        fontSize: "11px",
+        fontSize: "10px",
       },
     },
   },
@@ -163,6 +165,7 @@ const handleMetricChange = (value: MetricKey) => {
   });
 };
 
+// Force chart re-render after mount
 onMounted(() => {
   nextTick(() => {
     setTimeout(() => {
