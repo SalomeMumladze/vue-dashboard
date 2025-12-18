@@ -113,7 +113,7 @@ export default {
 
   methods: {
     breakpointChangedEvent(newBreakpoint, newLayout) {
-      console.log("Breakpoint:", newBreakpoint, "Layout:", newLayout);
+      // console.log("Breakpoint:", newBreakpoint, "Layout:", newLayout);
     },
   },
 };
