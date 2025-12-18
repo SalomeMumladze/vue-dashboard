@@ -6,13 +6,17 @@ import {
   DollarOutlined,
   ArrowUpOutlined,
   ArrowDownOutlined,
+  FilterOutlined,
 } from "@ant-design/icons-vue";
 import getFormattedNumber from "@/components/getFormattedNumber";
 import { formatDate } from "@/components/formatDate";
+import { useResponsive } from "@/components/useResponsive";
+import DateRange from "@/components/DateRange.vue";
 
+const { isMobile } = useResponsive();
 type MetricType = "weekly" | "daily";
 const selectedMetric = ref<MetricType>("weekly");
-const chartKey = ref(0); 
+const chartKey = ref(0);
 
 const cashFlowData = {
   weekly: [
@@ -190,23 +194,26 @@ watch(selectedMetric, () => {
 <template>
   <a-card :bordered="false">
     <template #title>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center flex-wrap gap-2">
         <DollarOutlined class="text-lg" />
         <span class="text-sm sm:text-base">Cash Flow</span>
       </div>
     </template>
 
     <template #extra>
-      <div class="flex items-center flex-wrap gap-2">
+      <div
+        class="sm:flex grid items-center justify-end sm:gap-2 gap-1 sm:p-0 p-2"
+      >
         <a-radio-group
-          size="small"
+          size="middle"
           v-model:value="selectedMetric"
-          class="sm:!text-base"
+          class="sm:!text-base !flex !justify-end"
         >
           <a-radio-button value="weekly">Weekly</a-radio-button>
           <a-radio-button value="daily">Daily</a-radio-button>
         </a-radio-group>
-        <a-range-picker size="small" class="sm:!size-middle" />
+
+        <DateRange size="middle" :allowClear="false" />
       </div>
     </template>
 

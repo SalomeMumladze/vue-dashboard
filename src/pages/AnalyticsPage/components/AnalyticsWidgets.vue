@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Layout from "@/components/Layout/Layout.vue";
 import {
   DollarOutlined,
   ShoppingCartOutlined,

@@ -3,7 +3,8 @@ import VueApexCharts from "vue3-apexcharts";
 import getShortFormattedNumber from "@/components/getShortFormattedNumber";
 import { renderTooltip } from "@/components/charts/CustomTooltip";
 import { formatDate } from "@/components/formatDate";
-import { ref, computed, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick } from "vue";
+import DateRange from "@/components/DateRange.vue";
 
 const chartKey = ref(0);
 
@@ -150,7 +151,7 @@ const chartOptions = {
     :body-style="{ height: 'fit-contents' }"
   >
     <template #extra>
-      <a-range-picker size="middle" />
+      <DateRange size="middle" :allowClear="false" />
     </template>
 
     <VueApexCharts

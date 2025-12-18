@@ -246,7 +246,7 @@ const columns = [
     <template #extra>
       <a-radio-group
         v-model:value="selectedMetric"
-        size="small"
+        size="middle"
         aria-label="Select metric to display"
       >
         <a-radio-button value="income">Income</a-radio-button>

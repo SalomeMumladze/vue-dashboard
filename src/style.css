@@ -78,3 +78,7 @@
 .ant-table-column-sorter-down {
   font-size: 10px !important;
 }
+
+.ant-picker .ant-picker-input {
+  width: 90px;
+}

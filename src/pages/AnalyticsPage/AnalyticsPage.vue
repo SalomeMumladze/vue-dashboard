@@ -10,7 +10,7 @@ import AnalyticsWidgets from "./components/AnalyticsWidgets.vue";
     <div class="grid gap-4">
       <CashFlow />
       <AnalyticsWidgets />
-      <Grid />
+      <!-- <Grid /> -->
     </div>
   </Layout>
 </template>
