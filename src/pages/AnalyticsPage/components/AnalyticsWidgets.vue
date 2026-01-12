@@ -7,7 +7,6 @@ import {
   ArrowUpOutlined,
   ArrowDownOutlined,
 } from "@ant-design/icons-vue";
-import { currency_options } from "@/components/Currency";
 import getFormattedNumber from "@/components/getFormattedNumber";
 
 interface Widget {

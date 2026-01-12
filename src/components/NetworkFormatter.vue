@@ -18,7 +18,7 @@ const imageSrc = computed(() => {
     path.toLowerCase().includes(key)
   );
 
-  return match ? icons[match] : icons["/src/assets/networks/default.png"];
+  return match ? icons[match] : "/src/assets/svg/other.svg";
 });
 </script>
 

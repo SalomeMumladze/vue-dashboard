@@ -28,7 +28,7 @@ const selectedKey = computed(() => {
   <a-menu
     theme="dark"
     mode="inline"
-    class="h-full"
+    class="h-fit"
     :selected-keys="[selectedKey]"
   >
     <a-menu-item
