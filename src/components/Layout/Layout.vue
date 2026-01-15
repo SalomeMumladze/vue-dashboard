@@ -5,6 +5,7 @@ import SidebarMenu from "./components/SidebarMenu.vue";
 import { useAuthStore } from "@/store/user";
 
 const auth = useAuthStore();
+const user = ref<any>(null);
 
 const collapsed = ref(false);
 const mobileMenuOpen = ref(false);
@@ -25,6 +26,13 @@ onMounted(() => {
   window.addEventListener("resize", checkMobile);
 });
 
+async function loadUsers() {
+  await auth.fetchUsers();
+}
+
+onMounted(async () => {
+  user.value = await auth.fetchUserById(1);
+});
 onBeforeUnmount(() => {
   window.removeEventListener("resize", checkMobile);
 });
@@ -71,6 +79,11 @@ onBeforeUnmount(() => {
       </a-layout-header>
 
       <a-layout-content class="p-4 sm:p-8 h-full overflow-auto">
+        <div v-if="user">
+          <p>ID: {{ user.id }}</p>
+          <p>Name: {{ user.name }}</p>
+          <p>Email: {{ user.email }}</p>
+        </div>
         <slot />
       </a-layout-content>
     </a-layout>

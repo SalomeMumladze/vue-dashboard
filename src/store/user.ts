@@ -10,6 +10,7 @@ interface User {
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
+    users: [] as User[],
     user: null as User | null,
     token: localStorage.getItem("token") || null,
   }),
@@ -23,13 +24,6 @@ export const useAuthStore = defineStore("auth", {
       router.push("/dashboard");
     },
 
-    async fetchUser() {
-      if (!this.token) return;
-      setToken(this.token);
-      const res = await api.get("/me");
-      this.user = res.data.user;
-    },
-
     async logout() {
       if (this.token) {
         await api.post("/logout").catch(() => {});
@@ -39,6 +33,42 @@ export const useAuthStore = defineStore("auth", {
       localStorage.removeItem("token");
       setToken(null);
       router.push("/login");
+    },
+    async register(
+      name: string,
+      email: string,
+      password: string,
+      password_confirmation: string
+    ) {
+      const res = await api.post("/register", {
+        name,
+        email,
+        password,
+        password_confirmation,
+      });
+
+      this.user = res.data.user;
+      this.token = res.data.token;
+      localStorage.setItem("token", this.token);
+      setToken(this.token);
+
+      router.push("/dashboard");
+    },
+    async fetchUsers() {
+      if (!this.token) return;
+      setToken(this.token);
+
+      const res = await api.get("/users");
+      this.users = res.data.users;
+    },
+    async fetchUserById(id: number) {
+      if (!this.token) return;
+      setToken(this.token);
+
+      const res = await api.get(`/users/${id}`);
+
+      console.log("Fetched user:", res.data.user);
+      return res.data.user;
     },
   },
 });

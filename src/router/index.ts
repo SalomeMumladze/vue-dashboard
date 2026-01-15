@@ -5,6 +5,7 @@ import AnalyticsPage from "@/pages/AnalyticsPage";
 import ReportsPage from "@/pages/ReportsPage.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import NotFound from "@/pages/NotFound.vue";
+import RegisterPage from "@/pages/RegisterPage.vue";
 
 import { useAuthStore } from "@/store/user";
 
@@ -15,6 +16,7 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   { path: "/login", component: LoginPage },
+  { path: "/register", component: RegisterPage },
   {
     path: "/dashboard",
     component: DashboardPage,
