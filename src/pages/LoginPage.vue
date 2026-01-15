@@ -1,38 +1,27 @@
-<script setup lang="ts">
-import { reactive } from "vue";
-import { useRouter } from "vue-router";
+<template>
+  <form @submit.prevent="submit">
+    <input v-model="email" type="email" placeholder="Email" />
+    <input v-model="password" type="password" placeholder="Password" />
+    <button type="submit">Login</button>
+    <p v-if="error">{{ error }}</p>
+  </form>
+</template>
 
-const router = useRouter();
+<script lang="ts" setup>
+import { ref } from "vue";
+import { useAuthStore } from "@/store/user";
 
-const form = reactive({
-  email: "",
-  password: "",
-});
+const auth = useAuthStore();
+const email = ref("test@example.com");
+const password = ref("password123");
+const error = ref("");
 
-const login = () => {
-  if (form.email === "test@test.com" && form.password === "123456") {
-    localStorage.setItem("token", "mock-token");
-    router.push("/dashboard");
-  } else {
-    alert("Incorrect credentials");
+const submit = async () => {
+  try {
+    error.value = "";
+    await auth.login(email.value, password.value);
+  } catch (e: any) {
+    error.value = e.response?.data?.message || "Login failed";
   }
 };
 </script>
-
-<template>
-  <a-row justify="center" align="middle" style="height: 100vh">
-    <a-col :span="6">
-      <a-card title="Login">
-        <a-form layout="vertical" @submit.prevent="login">
-          <a-form-item label="Email">
-            <a-input v-model:value="form.email" />
-          </a-form-item>
-          <a-form-item label="Password">
-            <a-input-password v-model:value="form.password" />
-          </a-form-item>
-          <a-button type="primary" block @click="login">Log in</a-button>
-        </a-form>
-      </a-card>
-    </a-col>
-  </a-row>
-</template>

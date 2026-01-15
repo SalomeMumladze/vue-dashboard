@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import api from "../services/api";
 import MetricsCard from "../components/MetricsCard.vue";
 
 interface Metric {
@@ -13,7 +12,6 @@ const metrics = ref<Metric[]>([]);
 
 onMounted(async () => {
   try {
-    // const { data } = await api.get("/users");
     metrics.value = [
       { title: "Users", value: 1232, description: "Total users" },
       { title: "Revenue", value: 5400, description: "Monthly revenue" },

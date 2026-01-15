@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
 import { MenuOutlined } from "@ant-design/icons-vue";
 import SidebarMenu from "./components/SidebarMenu.vue";
+import { useAuthStore } from "@/store/user";
 
-const router = useRouter();
+const auth = useAuthStore();
 
 const collapsed = ref(false);
 const mobileMenuOpen = ref(false);
 const isMobile = ref(false);
 
-const logout = () => {
-  localStorage.removeItem("token");
-  router.push("/login");
+const logout = async () => {
+  await auth.logout();
+  window.location.href = "/login";
 };
 
 const checkMobile = () => {
