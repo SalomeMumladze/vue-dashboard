@@ -1,18 +1,21 @@
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { computed, onMounted } from "vue";
 import { useAuthStore } from "@/store/user";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons-vue";
 
 const auth = useAuthStore();
-const user = ref<any>(null);
+
+const user = computed(() => auth.user);
 
 const logout = async () => {
   await auth.logout();
   window.location.href = "/login";
 };
 
-onMounted(async () => {
-  user.value = await auth.fetchUserById(1);
+onMounted(() => {
+  if (!auth.user && auth.token) {
+    auth.fetchUser();
+  }
 });
 </script>
 

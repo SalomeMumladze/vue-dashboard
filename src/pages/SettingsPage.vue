@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Layout from "@/components/Layout";
-import { reactive, ref, onMounted } from "vue";
-import { message } from "ant-design-vue";
+import { reactive, ref, onMounted, computed } from "vue";
+import { message, Modal } from "ant-design-vue";
 import {
   UserOutlined,
   MailOutlined,
@@ -12,10 +12,16 @@ import {
   UploadOutlined,
 } from "@ant-design/icons-vue";
 import { useAuthStore } from "@/store/user";
+import { setToken } from "@/services/axios";
 
 const auth = useAuthStore();
-const user = ref<any>(null);
+const user = computed(() => auth.user);
 const loading = ref(false);
+
+if (auth.token) {
+  setToken(auth.token);
+  auth.fetchUser();
+}
 
 const form = reactive({
   name: "",
@@ -30,7 +36,7 @@ const passwordForm = reactive({
 
 onMounted(async () => {
   try {
-    user.value = await auth.fetchUserById(1);
+    user.value = await auth.fetchUser();
 
     if (user.value) {
       form.name = user.value.name || "";
@@ -90,8 +96,19 @@ const resetForm = () => {
   }
   message.info("Changes discarded");
 };
-</script>
 
+const deleteAccount = () => {
+  Modal.confirm({
+    title: "Delete account?",
+    content: "This action cannot be undone.",
+    okType: "danger",
+    onOk: async () => {
+      await auth.deleteAccount(user.value.id);
+      message.success("Account deleted");
+    },
+  });
+};
+</script>
 
 <template>
   <Layout>
@@ -246,7 +263,7 @@ const resetForm = () => {
       <div
         class="flex justify-between items-center bg-white rounded-xl shadow-sm p-6"
       >
-        <a-button danger size="large" class="rounded-lg">
+        <a-button danger size="large" class="rounded-lg" @click="deleteAccount">
           <DeleteOutlined /> Delete Account
         </a-button>
 

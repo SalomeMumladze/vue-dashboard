@@ -11,23 +11,21 @@ interface User {
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     users: [] as User[],
-    user: null as User | null,
+    user: null as any,
     token: localStorage.getItem("token") || null,
   }),
   actions: {
     async login(email: string, password: string) {
-      const res = await api.post("/login", { email, password });
-      this.user = res.data.user;
-      this.token = res.data.token;
+      const { data } = await api.post("/login", { email, password });
+      this.user = data.user;
+      this.token = data.token;
       localStorage.setItem("token", this.token);
       setToken(this.token);
+
       router.push("/dashboard");
     },
 
-    async logout() {
-      if (this.token) {
-        await api.post("/logout").catch(() => {});
-      }
+    logout() {
       this.user = null;
       this.token = null;
       localStorage.removeItem("token");
@@ -54,12 +52,11 @@ export const useAuthStore = defineStore("auth", {
 
       router.push("/dashboard");
     },
-    async fetchUsers() {
+    async fetchUser() {
       if (!this.token) return;
       setToken(this.token);
-
-      const res = await api.get("/users");
-      this.users = res.data.users;
+      const { data } = await api.get("/me");
+      this.user = data;
     },
     async fetchUserById(id: number) {
       if (!this.token) return;
@@ -78,7 +75,6 @@ export const useAuthStore = defineStore("auth", {
 
       this.user = res.data.user;
     },
-
     async changePassword(
       id: number,
       old_password: string,
@@ -92,6 +88,16 @@ export const useAuthStore = defineStore("auth", {
         password,
         password_confirmation,
       });
+    },
+    async deleteAccount(id: number) {
+      await api.delete(`/users/${id}/delete`);
+
+      this.user = null;
+      this.token = null;
+      localStorage.removeItem("token");
+      setToken(null);
+
+      router.push("/login");
     },
   },
 });
