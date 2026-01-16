@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import { message } from "ant-design-vue";
-import { LockOutlined } from "@ant-design/icons-vue";
+import { LockOutlined, MailOutlined } from "@ant-design/icons-vue";
 
 import { useAuthStore } from "@/store/user";
 
@@ -66,12 +66,16 @@ const handleSubmit = async () => {
             <label class="block text-sm font-medium text-gray-700 mb-2"
               >Email Address</label
             >
+
             <a-input
               v-model:value="formState.email"
               size="large"
               placeholder="you@example.com"
               class="rounded-lg"
             >
+              <template #prefix>
+                <MailOutlined class="!text-gray-400" />
+              </template>
             </a-input>
           </a-form-item>
 
@@ -90,6 +94,9 @@ const handleSubmit = async () => {
               placeholder="••••••••"
               class="rounded-lg"
             >
+              <template #prefix>
+                <LockOutlined class="!text-gray-400" />
+              </template>
             </a-input-password>
           </a-form-item>
 
