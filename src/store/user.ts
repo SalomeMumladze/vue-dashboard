@@ -69,5 +69,29 @@ export const useAuthStore = defineStore("auth", {
 
       return res.data.user;
     },
+    async updateUser(id: number, name: string) {
+      setToken(this.token);
+
+      const res = await api.put(`/users/${id}`, {
+        name,
+      });
+
+      this.user = res.data.user;
+    },
+
+    async changePassword(
+      id: number,
+      old_password: string,
+      password: string,
+      password_confirmation: string
+    ) {
+      setToken(this.token);
+
+      await api.put(`/users/${id}/password`, {
+        old_password,
+        password,
+        password_confirmation,
+      });
+    },
   },
 });

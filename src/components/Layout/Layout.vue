@@ -57,6 +57,9 @@ onBeforeUnmount(() => {
         />
         <User />
       </a-layout-header>
+      <a-layout-content class="p-4 sm:p-6 h-full overflow-auto">
+        <slot />
+      </a-layout-content>
     </a-layout>
   </a-layout>
 </template>
