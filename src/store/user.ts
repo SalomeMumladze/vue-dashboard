@@ -67,7 +67,6 @@ export const useAuthStore = defineStore("auth", {
 
       const res = await api.get(`/users/${id}`);
 
-      console.log("Fetched user:", res.data.user);
       return res.data.user;
     },
   },
