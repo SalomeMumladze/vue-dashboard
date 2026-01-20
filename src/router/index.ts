@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import LoginPage from "@/pages/LoginPage.vue";
+import LoginPage from "@/pages/AuthPage/LoginPage.vue";
 import DashboardPage from "@/pages/DashboardPage";
 import AnalyticsPage from "@/pages/AnalyticsPage";
 import ReportsPage from "@/pages/ReportsPage.vue";
 import SettingsPage from "@/pages/SettingsPage.vue";
 import NotFound from "@/pages/NotFound.vue";
-import RegisterPage from "@/pages/RegisterPage.vue";
+import RegisterPage from "@/pages/AuthPage/RegisterPage.vue";
+import ResetPassword from "@/pages/AuthPage/ResetPassword.vue";
 
 import { useAuthStore } from "@/store/user";
 
@@ -17,6 +18,7 @@ const routes: RouteRecordRaw[] = [
   },
   { path: "/login", component: LoginPage },
   { path: "/register", component: RegisterPage },
+  { path: "/reset", component: ResetPassword },
   {
     path: "/dashboard",
     component: DashboardPage,

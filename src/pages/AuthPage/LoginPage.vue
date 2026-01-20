@@ -104,12 +104,13 @@ const handleSubmit = async () => {
             <a-checkbox v-model:checked="formState.remember">
               <span class="text-sm text-gray-600">Remember me</span>
             </a-checkbox>
-            <a
-              href="#"
-              class="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+            <router-link
+              to="/reset"
+              class="flex items-center gap-3 text-gray-700 hover:text-indigo-600 transition-colors"
             >
-              Forgot password?
-            </a>
+              <SettingOutlined class="text-lg" />
+              <span class="text-sm font-medium"> Forgot password?</span>
+            </router-link>
           </div>
 
           <a-alert

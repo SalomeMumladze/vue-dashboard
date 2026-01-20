@@ -36,7 +36,7 @@ export const useAuthStore = defineStore("auth", {
       name: string,
       email: string,
       password: string,
-      password_confirmation: string
+      password_confirmation: string,
     ) {
       const res = await api.post("/register", {
         name,
@@ -79,7 +79,7 @@ export const useAuthStore = defineStore("auth", {
       id: number,
       old_password: string,
       password: string,
-      password_confirmation: string
+      password_confirmation: string,
     ) {
       setToken(this.token);
 
@@ -98,6 +98,18 @@ export const useAuthStore = defineStore("auth", {
       setToken(null);
 
       router.push("/login");
+    },
+
+    async resetPassword(
+      email: string,
+      password: string,
+      password_confirmation: string,
+    ) {
+      await api.post("/reset-password", {
+        email,
+        password,
+        password_confirmation,
+      });
     },
   },
 });
