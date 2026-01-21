@@ -9,10 +9,10 @@ import {
   LockOutlined,
   SaveOutlined,
   DeleteOutlined,
-  UploadOutlined,
 } from "@ant-design/icons-vue";
 import { useAuthStore } from "@/store/user";
 import { setToken } from "@/services/axios";
+import AvatarUpload from "./AuthPage/AvatarUpload.vue";
 
 const auth = useAuthStore();
 const user = computed(() => auth.user);
@@ -76,7 +76,7 @@ const changePassword = async () => {
       user.value.id,
       passwordForm.currentPassword,
       passwordForm.newPassword,
-      passwordForm.confirmPassword
+      passwordForm.confirmPassword,
     );
 
     message.success("Password updated successfully!");
@@ -114,23 +114,7 @@ const deleteAccount = () => {
   <Layout>
     <div class="max-w-4xl mx-auto p-6 space-y-6">
       <div class="bg-white rounded-xl shadow-sm p-6">
-        <div class="flex items-center gap-6">
-          <a-avatar :size="100" class="text-white font-bold text-3xl">
-            {{ form.name ? form.name.charAt(0).toUpperCase() : "U" }}
-          </a-avatar>
-
-          <div class="flex flex-col gap-3">
-            <div class="flex gap-3">
-              <a-button type="primary" class="rounded-lg">
-                <UploadOutlined /> Upload Photo
-              </a-button>
-              <a-button class="rounded-lg">
-                <DeleteOutlined /> Remove
-              </a-button>
-            </div>
-            <p class="text-xs text-gray-500">JPG, PNG or GIF. Max size 2MB</p>
-          </div>
-        </div>
+        <AvatarUpload :name="form.name" />
       </div>
 
       <div class="bg-white rounded-xl shadow-sm p-6">

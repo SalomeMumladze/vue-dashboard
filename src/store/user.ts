@@ -6,12 +6,14 @@ interface User {
   id: number;
   name: string;
   email: string;
+  avatar: string | null;
 }
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     users: [] as User[],
     user: null as any,
+    avatar: null as any,
     token: localStorage.getItem("token") || null,
   }),
   actions: {
@@ -32,6 +34,7 @@ export const useAuthStore = defineStore("auth", {
       setToken(null);
       router.push("/login");
     },
+
     async register(
       name: string,
       email: string,
@@ -52,29 +55,32 @@ export const useAuthStore = defineStore("auth", {
 
       router.push("/dashboard");
     },
+
     async fetchUser() {
       if (!this.token) return;
       setToken(this.token);
       const { data } = await api.get("/me");
       this.user = data;
     },
-    async fetchUserById(id: number) {
-      if (!this.token) return;
+
+    async updateUser(id: number, name: string, avatarFile?: File) {
       setToken(this.token);
 
-      const res = await api.get(`/users/${id}`);
+      const formData = new FormData();
+      formData.append("name", name);
 
-      return res.data.user;
-    },
-    async updateUser(id: number, name: string) {
-      setToken(this.token);
+      if (avatarFile) {
+        formData.append("avatar", avatarFile);
+      }
 
-      const res = await api.put(`/users/${id}`, {
-        name,
+      const res = await api.put(`/users/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
 
       this.user = res.data.user;
+      if (res.data.avatar_url) this.user.avatar_url = res.data.avatar_url;
     },
+
     async changePassword(
       id: number,
       old_password: string,
@@ -89,6 +95,7 @@ export const useAuthStore = defineStore("auth", {
         password_confirmation,
       });
     },
+
     async deleteAccount(id: number) {
       await api.delete(`/users/${id}/delete`);
 
@@ -110,6 +117,14 @@ export const useAuthStore = defineStore("auth", {
         password,
         password_confirmation,
       });
+    },
+
+    async deleteAvatar(id: number) {
+      setToken(this.token);
+
+      const res = await api.delete(`/users/${id}/avatar/delete`);
+
+      this.user = res.data.user;
     },
   },
 });
