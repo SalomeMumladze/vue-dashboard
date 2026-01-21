@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useAuthStore } from "@/store/user";
 import { message } from "ant-design-vue";
-import { UploadOutlined, DeleteOutlined } from "@ant-design/icons-vue";
+import { CameraOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
 const props = defineProps({
   name: {
@@ -15,22 +15,18 @@ const auth = useAuthStore();
 const loading = ref(false);
 const previewUrl = ref<string | null>(null);
 
-function getAvatarUrl() {
+const avatarUrl = computed(() => {
   if (previewUrl.value) return previewUrl.value;
   if (auth.user?.avatar) {
     return `http://127.0.0.1:8000/storage/${auth.user.avatar}?t=${Date.now()}`;
   }
   return null;
-}
+});
 
 const handleUpload = async (options: any) => {
   const { file, onSuccess, onError } = options;
 
   previewUrl.value = URL.createObjectURL(file);
-
-  const formData = new FormData();
-  formData.append("name", props.name || auth.user.name);
-  formData.append("avatar", file);
 
   try {
     loading.value = true;
@@ -52,6 +48,11 @@ const handleUpload = async (options: any) => {
 };
 
 const removeAvatar = async () => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete your avatar?",
+  );
+  if (!confirmed) return;
+
   try {
     previewUrl.value = null;
     await auth.deleteAvatar(auth.user.id);
@@ -65,40 +66,50 @@ const removeAvatar = async () => {
 </script>
 
 <template>
-  <div class="flex items-center gap-6 w-full">
-    <div class="gap-6 flex w-full items-center flex-wrap">
-      <div class="mt-4">
-        <img
-          v-if="getAvatarUrl()"
-          :src="getAvatarUrl()"
-          class="w-32 h-32 rounded-full border border-gray-300"
-          alt="User Avatar"
-        />
-        <a-avatar
-          v-else
-          :size="128"
-          class="text-white font-bold sm:!text-5xl text-base !bg-gray-400"
-        >
-          {{ auth.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U" }}
-        </a-avatar>
-      </div>
+  <div class="flex justify-center">
+    <div class="relative w-36 h-36 group">
+      <img
+        v-if="avatarUrl"
+        :src="avatarUrl"
+        class="w-36 h-36 rounded-full border border-gray-300 object-cover shadow-md transition-transform duration-200 group-hover:scale-105"
+        alt="User Avatar"
+      />
+      <a-avatar
+        v-else
+        :size="144"
+        class="text-white font-bold !bg-gray-400 w-36 h-36 flex items-center justify-center text-5xl shadow-md transition-transform duration-200 group-hover:scale-105"
+      >
+        {{ auth.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U" }}
+      </a-avatar>
 
-      <div class="space-y-2">
-        <div class="flex gap-3 flex-wrap">
-          <a-upload
-            :custom-request="handleUpload"
-            :show-upload-list="false"
-            accept="image/*"
+      <div
+        class="absolute inset-0 rounded-full bg-black/25 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity duration-200"
+      >
+        <a-upload
+          :custom-request="handleUpload"
+          :show-upload-list="false"
+          accept="image/*"
+        >
+          <a-button
+            size="large"
+            shape="circle"
+            :loading="loading"
+            class="!bg-white !text-black hover:!bg-gray-100 shadow-md !flex items-center justify-center"
           >
-            <a-button :loading="loading" type="primary">
-              <UploadOutlined /> Upload Photo
-            </a-button>
-          </a-upload>
-          <a-button @click="removeAvatar" type="default">
-            <DeleteOutlined /> Remove
+            <CameraOutlined />
           </a-button>
-        </div>
-        <p class="text-xs text-gray-500">JPG, PNG or GIF. Max size 2MB</p>
+        </a-upload>
+
+        <a-button
+          v-if="avatarUrl"
+          size="large"
+          danger
+          shape="circle"
+          @click="removeAvatar"
+          class="shadow-md !flex items-center justify-center"
+        >
+          <DeleteOutlined />
+        </a-button>
       </div>
     </div>
   </div>

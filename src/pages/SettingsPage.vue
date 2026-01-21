@@ -113,20 +113,11 @@ const deleteAccount = () => {
 <template>
   <Layout>
     <div class="max-w-4xl mx-auto p-6 space-y-6">
-      <div class="bg-white rounded-xl shadow-sm p-6">
+      <div class="bg-white rounded-xl shadow-sm p-6 gap-2 grid">
         <AvatarUpload :name="form.name" />
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm p-6">
-        <h2
-          class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2"
-        >
-          <IdcardOutlined />
-          Personal Information
-        </h2>
 
         <a-form :model="form" layout="vertical" @finish="saveSettings">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <a-form-item
               label="Full Name"
               name="name"
@@ -157,6 +148,7 @@ const deleteAccount = () => {
                 size="large"
                 placeholder="your@email.com"
                 class="rounded-lg"
+                disabled="true"
               >
                 <template #prefix>
                   <MailOutlined class="!text-gray-400" />
@@ -165,6 +157,23 @@ const deleteAccount = () => {
             </a-form-item>
           </div>
         </a-form>
+
+        <div class="flex justify-center items-center">
+          <div class="flex gap-3">
+            <a-button size="medium" class="rounded-lg" @click="resetForm">
+              Reset
+            </a-button>
+            <a-button
+              type="primary"
+              size="medium"
+              :loading="loading"
+              class="rounded-lg"
+              @click="saveSettings"
+            >
+              <SaveOutlined /> Save Changes
+            </a-button>
+          </div>
+        </div>
       </div>
 
       <div class="bg-white rounded-xl shadow-sm p-6">
@@ -243,29 +252,9 @@ const deleteAccount = () => {
           </a-button>
         </a-form>
       </div>
-
-      <div
-        class="flex justify-between items-center bg-white rounded-xl shadow-sm p-6"
-      >
-        <a-button danger size="large" class="rounded-lg" @click="deleteAccount">
-          <DeleteOutlined /> Delete Account
-        </a-button>
-
-        <div class="flex gap-3">
-          <a-button size="large" class="rounded-lg" @click="resetForm">
-            Cancel
-          </a-button>
-          <a-button
-            type="primary"
-            size="large"
-            :loading="loading"
-            class="rounded-lg"
-            @click="saveSettings"
-          >
-            <SaveOutlined /> Save Changes
-          </a-button>
-        </div>
-      </div>
+      <a-button danger class="rounded-lg" @click="deleteAccount">
+        <DeleteOutlined /> Delete Account
+      </a-button>
     </div>
   </Layout>
 </template>
