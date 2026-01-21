@@ -48,11 +48,6 @@ const handleUpload = async (options: any) => {
 };
 
 const removeAvatar = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete your avatar?",
-  );
-  if (!confirmed) return;
-
   try {
     previewUrl.value = null;
     await auth.deleteAvatar(auth.user.id);
@@ -100,16 +95,22 @@ const removeAvatar = async () => {
           </a-button>
         </a-upload>
 
-        <a-button
+        <a-popconfirm
           v-if="avatarUrl"
-          size="large"
-          danger
-          shape="circle"
-          @click="removeAvatar"
-          class="shadow-md !flex items-center justify-center"
+          title="Are you sure you want to delete your avatar?"
+          ok-text="Yes"
+          cancel-text="No"
+          @confirm="removeAvatar"
         >
-          <DeleteOutlined />
-        </a-button>
+          <a-button
+            size="large"
+            danger
+            shape="circle"
+            class="shadow-md !flex items-center justify-center"
+          >
+            <DeleteOutlined />
+          </a-button>
+        </a-popconfirm>
       </div>
     </div>
   </div>

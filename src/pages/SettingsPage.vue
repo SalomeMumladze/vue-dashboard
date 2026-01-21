@@ -242,12 +242,7 @@ const deleteAccount = () => {
             </a-form-item>
           </div>
 
-          <a-button
-            type="default"
-            html-type="submit"
-            size="large"
-            class="rounded-lg"
-          >
+          <a-button type="default" html-type="submit" class="rounded-lg">
             Update Password
           </a-button>
         </a-form>
