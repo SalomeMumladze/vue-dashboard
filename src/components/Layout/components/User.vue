@@ -9,8 +9,8 @@ const previewUrl = ref<string | null>(null);
 
 const avatarUrl = computed(() => {
   if (previewUrl.value) return previewUrl.value;
-  if (auth.user?.avatar) {
-    return `http://127.0.0.1:8000/storage/${auth.user.avatar}?t=${Date.now()}`;
+  if (auth.user?.avatar_url) {
+    return `${auth.user.avatar_url}?t=${Date.now()}`;
   }
   return null;
 });

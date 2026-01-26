@@ -17,8 +17,8 @@ const previewUrl = ref<string | null>(null);
 
 const avatarUrl = computed(() => {
   if (previewUrl.value) return previewUrl.value;
-  if (auth.user?.avatar) {
-    return `http://127.0.0.1:8000/storage/${auth.user.avatar}?t=${Date.now()}`;
+  if (auth.user?.avatar_url) {
+    return `${auth.user.avatar_url}?t=${Date.now()}`;
   }
   return null;
 });
@@ -52,7 +52,7 @@ const removeAvatar = async () => {
     previewUrl.value = null;
     await auth.deleteAvatar(auth.user.id);
 
-    auth.user.avatar = null;
+    auth.user.avatar_url = null;
     message.success("Avatar removed");
   } catch (err: any) {
     message.error("Failed to remove avatar");
