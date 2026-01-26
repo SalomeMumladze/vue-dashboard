@@ -8,6 +8,7 @@ import {
   LockOutlined,
   MailOutlined,
 } from "@ant-design/icons-vue";
+import SocialAuth from "./SocialAuth.vue";
 
 const auth = useAuthStore();
 const name = ref("");
@@ -19,6 +20,11 @@ const loading = ref(false);
 const agreeToTerms = ref(false);
 
 const submit = async () => {
+  if (!agreeToTerms.value) {
+    message.error("You must agree to the Terms of Service and Privacy Policy");
+    return; // stop registration
+  }
+
   try {
     loading.value = true;
     error.value = "";
@@ -35,18 +41,6 @@ const submit = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const loginWithGoogle = async () => {
-  try {
-    await auth.loginWithGoogle();
-  } catch (e) {
-    console.error("Google login failed", e);
-  }
-};
-
-const loginWithFacebook = async () => {
-  window.location.href = "http://localhost:8000/auth/facebook";
 };
 </script>
 
@@ -139,7 +133,10 @@ const loginWithFacebook = async () => {
           </div>
 
           <div class="flex items-start">
-            <a-checkbox v-model:checked="agreeToTerms" class="mt-1">
+            <a-checkbox
+              v-model:checked="agreeToTerms"
+              :class="!agreeToTerms ? 'border-red-500' : ''"
+            >
               <span class="text-sm text-gray-600">
                 I agree to the
                 <a href="#" class="text-indigo-600 hover:text-indigo-500"
@@ -183,32 +180,7 @@ const loginWithFacebook = async () => {
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <button
-            type="button"
-            @click="loginWithGoogle"
-            class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors"
-          >
-            <img
-              src="@/assets/img/networks/google.png"
-              alt="google"
-              class="w-4 h-4"
-            />
-            <span class="ml-2 text-sm font-medium text-gray-700">Google</span>
-          </button>
-          <button
-            @click="loginWithFacebook"
-            type="button"
-            class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors"
-          >
-            <img
-              src="@/assets/img/networks/facebook.png"
-              alt="facebook"
-              class="w-4 h-4"
-            />
-            <span class="ml-2 text-sm font-medium text-gray-700">Facebook</span>
-          </button>
-        </div>
+        <SocialAuth />
 
         <p class="text-center text-sm text-gray-600">
           Already have an account?
