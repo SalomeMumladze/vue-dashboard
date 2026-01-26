@@ -59,10 +59,13 @@ export const useAuthStore = defineStore("auth", {
     async fetchUser() {
       if (!this.token) return;
       setToken(this.token);
-      const { data } = await api.get("/me");
-      this.user = data;
+      try {
+        const { data } = await api.get("/me");
+        this.user = data;
+      } catch (error) {
+        this.user = null;
+      }
     },
-
     async updateUser(id: number, name: string, avatarFile?: File) {
       setToken(this.token);
 
@@ -125,6 +128,37 @@ export const useAuthStore = defineStore("auth", {
       const res = await api.delete(`/users/${id}/avatar/delete`);
 
       this.user = res.data.user;
+    },
+
+    async loginWithGoogle() {
+      const popup = window.open(
+        "http://localhost:8000/auth/google",
+        "Google Login",
+        "width=500,height=600",
+      );
+
+      return new Promise<void>((resolve) => {
+        const listener = (event: MessageEvent) => {
+          if (event.origin !== "http://localhost:8000") return;
+
+          if (event.data?.token) {
+            this.token = event.data.token;
+            localStorage.setItem("token", this.token);
+            setToken(this.token);
+
+            this.fetchUser().then(() => {
+              router.push("/dashboard");
+              console.log("Login successful!", this.user.name);
+              resolve();
+            });
+
+            window.removeEventListener("message", listener);
+            popup?.close();
+          }
+        };
+
+        window.addEventListener("message", listener);
+      });
     },
   },
 });

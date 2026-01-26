@@ -1,7 +1,8 @@
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -9,9 +10,9 @@ const api = axios.create({
 
 export const setToken = (token: string | null) => {
   if (token) {
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
-    delete api.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common["Authorization"];
   }
 };
 

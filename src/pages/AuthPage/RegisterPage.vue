@@ -26,7 +26,7 @@ const submit = async () => {
       name.value,
       email.value,
       password.value,
-      password_confirmation.value
+      password_confirmation.value,
     );
     message.success("Registration successful!");
   } catch (e: any) {
@@ -34,6 +34,14 @@ const submit = async () => {
     message.error("Registration failed");
   } finally {
     loading.value = false;
+  }
+};
+
+const loginWithGoogle = async () => {
+  try {
+    await auth.loginWithGoogle();
+  } catch (e) {
+    console.error("Google login failed", e);
   }
 };
 </script>
@@ -174,6 +182,7 @@ const submit = async () => {
         <div class="grid grid-cols-2 gap-3">
           <button
             type="button"
+            @click="loginWithGoogle"
             class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors"
           >
             <img

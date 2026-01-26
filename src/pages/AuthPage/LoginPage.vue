@@ -30,6 +30,14 @@ const handleSubmit = async () => {
     loading.value = false;
   }
 };
+
+const loginWithGoogle = async () => {
+  try {
+    await auth.loginWithGoogle();
+  } catch (e) {
+    console.error("Google login failed", e);
+  }
+};
 </script>
 
 <template>
@@ -147,6 +155,7 @@ const handleSubmit = async () => {
 
         <div class="grid grid-cols-2 gap-3">
           <button
+            @click="loginWithGoogle"
             type="button"
             class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors"
           >

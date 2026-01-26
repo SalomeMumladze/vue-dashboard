@@ -7,8 +7,8 @@ import SettingsPage from "@/pages/SettingsPage.vue";
 import NotFound from "@/pages/NotFound.vue";
 import RegisterPage from "@/pages/AuthPage/RegisterPage.vue";
 import ResetPassword from "@/pages/AuthPage/ResetPassword.vue";
-
 import { useAuthStore } from "@/store/user";
+import OAuthCallback from "@/pages/AuthPage/OAuthCallback.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -16,6 +16,7 @@ const routes: RouteRecordRaw[] = [
     component: DashboardPage,
     meta: { requiresAuth: true },
   },
+  { path: "/oauth-callback", component: OAuthCallback },
   { path: "/login", component: LoginPage },
   { path: "/register", component: RegisterPage },
   { path: "/reset", component: ResetPassword },
