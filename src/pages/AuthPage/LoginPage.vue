@@ -38,6 +38,10 @@ const loginWithGoogle = async () => {
     console.error("Google login failed", e);
   }
 };
+
+const loginWithFacebook = async () => {
+  window.location.href = "http://localhost:8000/auth/facebook";
+};
 </script>
 
 <template>
@@ -168,6 +172,7 @@ const loginWithGoogle = async () => {
             <span class="ml-2 text-sm font-medium text-gray-700">Google</span>
           </button>
           <button
+            @click="loginWithFacebook"
             type="button"
             class="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors"
           >
