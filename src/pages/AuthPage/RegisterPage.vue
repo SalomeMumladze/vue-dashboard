@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useAuthStore } from "@/store/user";
 import { message } from "ant-design-vue";
 import {
@@ -11,28 +11,33 @@ import {
 import SocialAuth from "./SocialAuth.vue";
 
 const auth = useAuthStore();
-const name = ref("");
-const email = ref("");
-const password = ref("");
-const password_confirmation = ref("");
+
+const formState = reactive({
+  name: "",
+  email: "",
+  password: "",
+  password_confirmation: "",
+  remember: false,
+  agreeToTerms: false,
+});
+
 const error = ref("");
 const loading = ref(false);
-const agreeToTerms = ref(false);
 
 const submit = async () => {
-  if (!agreeToTerms.value) {
+  if (!formState.agreeToTerms) {
     message.error("You must agree to the Terms of Service and Privacy Policy");
-    return; // stop registration
+    return;
   }
 
   try {
     loading.value = true;
     error.value = "";
     await auth.register(
-      name.value,
-      email.value,
-      password.value,
-      password_confirmation.value,
+      formState.name,
+      formState.email,
+      formState.password,
+      formState.password_confirmation,
     );
     message.success("Registration successful!");
   } catch (e: any) {
@@ -62,80 +67,81 @@ const submit = async () => {
           </p>
         </div>
 
-        <form @submit.prevent="submit" class="space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Full Name</label
-            >
+        <a-form :model="formState" layout="vertical" @finish="submit">
+          <a-form-item
+            name="name"
+            :rules="[{ required: true, message: 'Please input your name!' }]"
+          >
             <a-input
-              v-model:value="name"
               size="large"
               placeholder="Full Name"
-              required
-              class="rounded-lg"
-            >
-              <template #prefix>
-                <UserOutlined class="!text-gray-400" />
-              </template>
-            </a-input>
-          </div>
+              v-model:value="formState.name"
+              ><template #prefix>
+                <UserOutlined class="!text-gray-400" /> </template
+            ></a-input>
+          </a-form-item>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Email Address</label
-            >
+          <a-form-item
+            name="email"
+            :rules="[
+              { required: true, message: 'Please input your email!' },
+              { type: 'email', message: 'Please enter a valid email!' },
+            ]"
+          >
             <a-input
-              v-model:value="email"
-              type="email"
               size="large"
               placeholder="Email Address"
-              required
-              class="rounded-lg"
+              v-model:value="formState.email"
             >
               <template #prefix>
                 <MailOutlined class="!text-gray-400" />
               </template>
             </a-input>
-          </div>
+          </a-form-item>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Password</label
-            >
+          <a-form-item
+            name="password"
+            :rules="[
+              { required: true, message: 'Please input your password!' },
+            ]"
+          >
             <a-input-password
-              v-model:value="password"
               size="large"
-              placeholder="••••••••"
-              required
-              class="rounded-lg"
+              placeholder="Enter Password"
+              v-model:value="formState.password"
             >
               <template #prefix>
-                <LockOutlined class="!text-gray-400" />
-              </template>
-            </a-input-password>
-          </div>
+                <LockOutlined class="!text-gray-400" /> </template
+            ></a-input-password>
+          </a-form-item>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Confirm Password</label
-            >
+          <a-form-item
+            name="password_confirmation"
+            :rules="[
+              { required: true, message: 'Please confirm your password!' },
+              {
+                validator: async (_: any, value: string) => {
+                  if (value !== formState.password) {
+                    throw new Error('Passwords do not match');
+                  }
+                },
+              },
+            ]"
+          >
             <a-input-password
-              v-model:value="password_confirmation"
               size="large"
-              placeholder="••••••••"
-              required
-              class="rounded-lg"
+              placeholder="Confirm Password"
+              v-model:value="formState.password_confirmation"
             >
               <template #prefix>
-                <LockOutlined class="!text-gray-400" />
-              </template>
-            </a-input-password>
-          </div>
+                <LockOutlined class="!text-gray-400" /> </template
+            ></a-input-password>
+          </a-form-item>
 
           <div class="flex items-start">
             <a-checkbox
-              v-model:checked="agreeToTerms"
-              :class="!agreeToTerms ? 'border-red-500' : ''"
+              v-model:checked="formState.agreeToTerms"
+              :class="!formState.agreeToTerms ? 'border-red-500' : ''"
             >
               <span class="text-sm text-gray-600">
                 I agree to the
@@ -165,11 +171,11 @@ const submit = async () => {
             html-type="submit"
             size="large"
             :loading="loading"
-            class="w-full h-12 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0 hover:from-blue-600 hover:to-indigo-700 font-medium text-base shadow-lg hover:shadow-xl transition-all"
+            class="w-full my-4 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-600 border-0 hover:from-blue-600 hover:to-indigo-700 font-medium text-base shadow-lg hover:shadow-xl transition-all"
           >
             {{ loading ? "Creating Account..." : "Create Account" }}
           </a-button>
-        </form>
+        </a-form>
 
         <div class="relative">
           <div class="absolute inset-0 flex items-center">

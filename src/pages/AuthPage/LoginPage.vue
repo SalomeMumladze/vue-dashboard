@@ -8,8 +8,8 @@ import SocialAuth from "./SocialAuth.vue";
 const auth = useAuthStore();
 
 const formState = reactive({
-  email: "test@example.com",
-  password: "password123",
+  email: "",
+  password: "",
   remember: false,
 });
 
@@ -63,10 +63,6 @@ const handleSubmit = async () => {
               { type: 'email', message: 'Please enter a valid email!' },
             ]"
           >
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Email Address</label
-            >
-
             <a-input
               v-model:value="formState.email"
               size="large"
@@ -85,9 +81,6 @@ const handleSubmit = async () => {
               { required: true, message: 'Please input your password!' },
             ]"
           >
-            <label class="block text-sm font-medium text-gray-700 mb-2"
-              >Password</label
-            >
             <a-input-password
               v-model:value="formState.password"
               size="large"
