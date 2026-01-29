@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import LoginPage from "@/pages/AuthPage/LoginPage.vue";
-import DashboardPage from "@/pages/DashboardPage";
-import AnalyticsPage from "@/pages/AnalyticsPage";
-import ReportsPage from "@/pages/ReportsPage.vue";
-import SettingsPage from "@/pages/SettingsPage.vue";
-import NotFound from "@/pages/NotFound.vue";
-import RegisterPage from "@/pages/AuthPage/RegisterPage.vue";
-import ResetPassword from "@/pages/AuthPage/ResetPassword.vue";
+import LoginPage from "@/views/AuthPage/LoginPage.vue";
+import DashboardPage from "@/views/DashboardPage";
+import AnalyticsPage from "@/views/AnalyticsPage";
+import ReportsPage from "@/views/ReportsPage.vue";
+import SettingsPage from "@/views/SettingsPage.vue";
+import NotFound from "@/views/NotFound.vue";
+import RegisterPage from "@/views/AuthPage/RegisterPage.vue";
+import ResetPassword from "@/views/AuthPage/ResetPassword.vue";
 import { useAuthStore } from "@/store/auth/auth.store";
-import OAuthCallback from "@/pages/AuthPage/OAuthCallback.vue";
+import OAuthCallback from "@/views/AuthPage/OAuthCallback.vue";
 
 const routes: RouteRecordRaw[] = [
   {
