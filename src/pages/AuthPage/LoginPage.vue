@@ -2,7 +2,7 @@
 import { ref, reactive } from "vue";
 import { message } from "ant-design-vue";
 import { LockOutlined, MailOutlined } from "@ant-design/icons-vue";
-import { useAuthStore } from "@/store/user";
+import { useAuthStore } from "@/store/auth/auth.store";
 import SocialAuth from "./SocialAuth.vue";
 
 const auth = useAuthStore();

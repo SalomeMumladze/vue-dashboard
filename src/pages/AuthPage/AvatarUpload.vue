@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
-import { useAuthStore } from "@/store/user";
+import { useUserStore } from "@/store/user/user.store";
 import { message } from "ant-design-vue";
 import { CameraOutlined, DeleteOutlined } from "@ant-design/icons-vue";
 
@@ -11,14 +11,14 @@ const props = defineProps({
   },
 });
 
-const auth = useAuthStore();
+const userStore = useUserStore();
 const loading = ref(false);
 const previewUrl = ref<string | null>(null);
 
 const avatarUrl = computed(() => {
   if (previewUrl.value) return previewUrl.value;
-  if (auth.user?.avatar_url) {
-    return `${auth.user.avatar_url}?t=${Date.now()}`;
+  if (userStore.user?.avatar_url) {
+    return `${userStore.user.avatar_url}?t=${Date.now()}`;
   }
   return null;
 });
@@ -31,9 +31,9 @@ const handleUpload = async (options: any) => {
   try {
     loading.value = true;
 
-    const res = await auth.updateUser(
-      auth.user.id,
-      props.name || auth.user.name,
+    const res = await userStore.updateUser(
+      userStore.user.id,
+      props.name || userStore.user.name,
       file,
     );
 
@@ -50,9 +50,9 @@ const handleUpload = async (options: any) => {
 const removeAvatar = async () => {
   try {
     previewUrl.value = null;
-    await auth.deleteAvatar(auth.user.id);
+    await userStore.deleteAvatar(userStore.user.id);
 
-    auth.user.avatar_url = null;
+    userStore.user.avatar_url = null;
     message.success("Avatar removed");
   } catch (err: any) {
     message.error("Failed to remove avatar");
@@ -74,7 +74,11 @@ const removeAvatar = async () => {
         :size="144"
         class="text-white font-bold !bg-gray-400 w-36 h-36 flex items-center justify-center text-5xl shadow-md transition-transform duration-200 group-hover:scale-105"
       >
-        {{ auth.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U" }}
+        {{
+          userStore.user?.name
+            ? userStore.user.name.charAt(0).toUpperCase()
+            : "U"
+        }}
       </a-avatar>
 
       <div

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { useAuthStore } from "@/store/user";
+import { useAuthStore } from "@/store/auth/auth.store";
 import { message } from "ant-design-vue";
 import { LockOutlined, MailOutlined } from "@ant-design/icons-vue";
 import { useRouter } from "vue-router";

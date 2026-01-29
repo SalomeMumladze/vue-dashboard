@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import { useAuthStore } from "@/store/user";
+import { useAuthStore } from "@/store/auth/auth.store";
+import { useUserStore } from "@/store/user/user.store";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons-vue";
 
 const auth = useAuthStore();
-const user = computed(() => auth.user);
+const userStore = useUserStore();
+const user = computed(() => userStore.user);
 const previewUrl = ref<string | null>(null);
 
 const avatarUrl = computed(() => {
   if (previewUrl.value) return previewUrl.value;
-  if (auth.user?.avatar_url) {
-    return `${auth.user.avatar_url}?t=${Date.now()}`;
+  if (userStore.user?.avatar_url) {
+    return `${userStore.user.avatar_url}?t=${Date.now()}`;
   }
   return null;
 });
@@ -21,8 +23,8 @@ const logout = async () => {
 };
 
 onMounted(() => {
-  if (!auth.user && auth.token) {
-    auth.fetchUser();
+  if (!userStore.user && auth.token) {
+    userStore.fetchUser();
   }
 });
 </script>
@@ -44,7 +46,7 @@ onMounted(() => {
         :size="40"
         class="text-white font-bold sm:!text-xl text-sm !bg-gray-400"
       >
-        {{ auth.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U" }}
+        {{ user?.name ? user.name.charAt(0).toUpperCase() : "U" }}
       </a-avatar>
     </a>
 
@@ -66,9 +68,7 @@ onMounted(() => {
               :size="48"
               class="text-white font-bold text-3xl bg-blue-500"
             >
-              {{
-                auth.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U"
-              }}
+              {{ user?.name ? user.name.charAt(0).toUpperCase() : "U" }}
             </a-avatar>
             <div class="flex flex-col">
               <span class="text-sm font-semibold text-gray-800">{{

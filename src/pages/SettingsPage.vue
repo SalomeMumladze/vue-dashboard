@@ -10,17 +10,19 @@ import {
   SaveOutlined,
   DeleteOutlined,
 } from "@ant-design/icons-vue";
-import { useAuthStore } from "@/store/user";
+import { useAuthStore } from "@/store/auth/auth.store";
+import { useUserStore } from "@/store/user/user.store";
 import { setToken } from "@/services/axios";
 import AvatarUpload from "./AuthPage/AvatarUpload.vue";
 
 const auth = useAuthStore();
-const user = computed(() => auth.user);
+const userStore = useUserStore();
+const user = computed(() => userStore.user);
 const loading = ref(false);
 
 if (auth.token) {
   setToken(auth.token);
-  auth.fetchUser();
+  userStore.fetchUser();
 }
 
 const form = reactive({
@@ -36,7 +38,7 @@ const passwordForm = reactive({
 
 onMounted(async () => {
   try {
-    user.value = await auth.fetchUser();
+    user.value = await userStore.fetchUser();
 
     if (user.value) {
       form.name = user.value.name || "";
@@ -53,7 +55,7 @@ const saveSettings = async () => {
 
     if (!user.value) return;
 
-    await auth.updateUser(user.value.id, form.name);
+    await userStore.updateUser(user.value.id, form.name);
 
     message.success("Settings saved successfully!");
   } catch (error: any) {
@@ -72,12 +74,11 @@ const changePassword = async () => {
   }
 
   try {
-    await auth.changePassword(
-      user.value.id,
-      passwordForm.currentPassword,
-      passwordForm.newPassword,
-      passwordForm.confirmPassword,
-    );
+    await userStore.changePassword(user.value.id, {
+      old_password: passwordForm.currentPassword,
+      password: passwordForm.newPassword,
+      password_confirmation: passwordForm.confirmPassword,
+    });
 
     message.success("Password updated successfully!");
 
@@ -103,7 +104,7 @@ const deleteAccount = () => {
     content: "This action cannot be undone.",
     okType: "danger",
     onOk: async () => {
-      await auth.deleteAccount(user.value.id);
+      await userStore.deleteAccount(user.value.id);
       message.success("Account deleted");
     },
   });

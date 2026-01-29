@@ -4,9 +4,11 @@
 
 <script lang="ts" setup>
 import { onMounted } from "vue";
-import { useAuthStore } from "@/store/user";
+import { useUserStore } from "@/store/user/user.store";
+import { useAuthStore } from "@/store/auth/auth.store";
 import router from "@/router";
 
+const userStore = useUserStore();
 const auth = useAuthStore();
 
 onMounted(() => {
@@ -16,7 +18,7 @@ onMounted(() => {
   if (token) {
     auth.token = token;
     localStorage.setItem("token", token);
-    auth.fetchUser().then(() => {
+    userStore.fetchUser().then(() => {
       router.push("/dashboard");
     });
   } else {

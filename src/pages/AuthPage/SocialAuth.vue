@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useAuthStore } from "@/store/user";
+import { useAuthStore } from "@/store/auth/auth.store";
 
 const auth = useAuthStore();
 
