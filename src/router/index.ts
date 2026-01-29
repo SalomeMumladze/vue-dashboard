@@ -9,6 +9,8 @@ import RegisterPage from "@/views/AuthPage/RegisterPage.vue";
 import ResetPassword from "@/views/AuthPage/ResetPassword.vue";
 import { useAuthStore } from "@/store/auth/auth.store";
 import OAuthCallback from "@/views/AuthPage/OAuthCallback.vue";
+import { useUserStore } from "@/store/user/user.store";
+import { setToken } from "@/services/axios";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -40,8 +42,20 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
   const auth = useAuthStore();
+
+  if (auth.token && !userStore.user) {
+    setToken(auth.token);
+    try {
+      await userStore.fetchUser();
+    } catch (err) {
+      console.error("Failed to fetch user:", err);
+      return next("/login");
+    }
+  }
+
   if (to.meta.requiresAuth && !auth.token) {
     next("/login");
   } else if (to.path === "/login" && auth.token) {
@@ -50,4 +64,5 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
 export default router;
